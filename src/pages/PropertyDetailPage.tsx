@@ -6,6 +6,7 @@ import {
   CheckCircle2, Loader2, Send, X,
 } from 'lucide-react';
 import { useProperty, useProperties } from '../hooks/useProperties';
+import { saveInquiry } from '../lib/api';
 import WhatsAppButton from '../components/ui/WhatsAppButton';
 import PropertyCard from '../components/ui/PropertyCard';
 
@@ -47,10 +48,17 @@ export default function PropertyDetailPage() {
     else navigator.clipboard.writeText(window.location.href);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    setTimeout(() => { setSending(false); setSent(true); }, 1200);
+    try {
+      await saveInquiry({
+        name: form.name, phone: form.phone, email: form.email,
+        property: property!.title, propertyId: property!.id, message: form.message,
+      });
+    } catch { /* guardado en Firestore, fallo silencioso */ }
+    setSending(false);
+    setSent(true);
   };
 
   const similar = all

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PlusCircle, Pencil, Trash2, Search, Eye, Star, Filter } from 'lucide-react';
 import { useProperties } from '../../hooks/useProperties';
+import { deleteProperty } from '../../lib/api';
 import type { OperationType } from '../../types/property';
 
 export default function AdminPropertiesPage() {
@@ -173,8 +174,8 @@ export default function AdminPropertiesPage() {
                 Cancelar
               </button>
               <button
-                onClick={() => {
-                  // TODO: connect to Firebase delete
+                onClick={async () => {
+                  if (deleteId) await deleteProperty(deleteId);
                   setDeleteId(null);
                 }}
                 className="flex-1 py-2.5 bg-red-500 hover:bg-red-400 text-white font-semibold rounded-xl text-sm transition-colors"

@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Propiedades: lectura pública, escritura solo autenticados
+    match /properties/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    // Consultas: cualquiera puede crear, solo autenticados pueden leer/borrar
+    match /inquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}

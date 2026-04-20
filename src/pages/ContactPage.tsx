@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle2, MessageCircle } from 'lucide-react';
 import WhatsAppButton, { buildWaUrl } from '../components/ui/WhatsAppButton';
+import { saveInquiry } from '../lib/api';
 
 const SERVICES = [
   'Quiero comprar una propiedad',
@@ -16,10 +17,17 @@ export default function ContactPage() {
   const [sent, setSent]     = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSent(true); }, 1200);
+    try {
+      await saveInquiry({
+        name: form.name, phone: form.phone, email: form.email,
+        property: form.service, propertyId: '', message: form.message,
+      });
+    } catch { /* fallo silencioso */ }
+    setLoading(false);
+    setSent(true);
   };
 
   return (

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import {
   Save, ArrowLeft, ImagePlus, X, Loader2, CheckCircle2, Star,
 } from 'lucide-react';
-import { fetchProperty } from '../../lib/api';
+import { fetchProperty, createProperty, updateProperty } from '../../lib/api';
 import type { PropertyType, OperationType } from '../../types/property';
 import { VENEZUELAN_CITIES } from '../../types/property';
 
@@ -69,10 +69,31 @@ export default function PropertyFormPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 1000)); // TODO: Firebase save
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => navigate('/admin/propiedades'), 1500);
+    try {
+      const payload = {
+        title: form.title, description: form.description,
+        type: form.type, operation: form.operation,
+        price: Number(form.price), currency: form.currency as 'USD' | 'EUR' | 'VES',
+        location: { city: form.city, zone: form.zone, address: form.address },
+        features: {
+          bedrooms: Number(form.bedrooms), bathrooms: Number(form.bathrooms),
+          parking: Number(form.parking), area: Number(form.area),
+        },
+        amenities: form.amenities,
+        images: imageUrls.filter(Boolean),
+        featured: form.featured, available: form.available,
+        contactPhone: form.contactPhone, contactEmail: form.contactEmail,
+        createdAt: new Date(), updatedAt: new Date(),
+      };
+      if (isEdit && id) await updateProperty(id, payload);
+      else await createProperty(payload);
+      setSaved(true);
+      setTimeout(() => navigate('/admin/propiedades'), 1500);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
