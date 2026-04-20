@@ -12,6 +12,10 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 
 // Client pages
 import HomePage from './pages/HomePage';
+import PropertiesPage from './pages/PropertiesPage';
+import PropertyDetailPage from './pages/PropertyDetailPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 // Admin pages
 import LoginPage from './pages/admin/LoginPage';
@@ -37,21 +41,17 @@ export default function App() {
       <BrowserRouter>
         <Routes>
 
-          {/* ─── CLIENT ROUTES ──────────────────────────────── */}
-          <Route path="/" element={
-            <ClientLayout><HomePage /></ClientLayout>
-          } />
+          {/* ─── CLIENTE ──────────────────────────────────────── */}
+          <Route path="/" element={<ClientLayout><HomePage /></ClientLayout>} />
+          <Route path="/propiedades" element={<ClientLayout><PropertiesPage /></ClientLayout>} />
+          <Route path="/propiedad/:id" element={<ClientLayout><PropertyDetailPage /></ClientLayout>} />
+          <Route path="/nosotros" element={<ClientLayout><AboutPage /></ClientLayout>} />
+          <Route path="/contacto" element={<ClientLayout><ContactPage /></ClientLayout>} />
 
-          {/* TODO: add more client routes here */}
-          {/* <Route path="/propiedades" element={<ClientLayout><PropertiesPage /></ClientLayout>} /> */}
-
-          {/* ─── ADMIN ROUTES ───────────────────────────────── */}
+          {/* ─── ADMIN ────────────────────────────────────────── */}
           <Route path="/admin/login" element={<LoginPage />} />
-
           <Route path="/admin" element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
+            <ProtectedRoute><AdminLayout /></ProtectedRoute>
           }>
             <Route index element={<DashboardPage />} />
             <Route path="propiedades" element={<AdminPropertiesPage />} />
