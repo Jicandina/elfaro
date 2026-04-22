@@ -1,12 +1,17 @@
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Car, Maximize2, MapPin, Heart } from 'lucide-react';
+import { BedDouble, Bath, Car, Maximize2, MapPin, Heart, Scale } from 'lucide-react';
 import { useState } from 'react';
 import type { Property } from '../../types/property';
 import WhatsAppButton from './WhatsAppButton';
+import { useFavorites } from '../../hooks/useFavorites';
+import { useCompare } from '../../context/CompareContext';
 
 export default function PropertyCard({ property }: { property: Property }) {
-  const [liked, setLiked]       = useState(false);
   const [imgError, setImgError] = useState(false);
+  const { toggle, isFav }       = useFavorites();
+  const { add, remove, isIn }   = useCompare();
+  const liked    = isFav(property.id);
+  const compared = isIn(property.id);
 
   const fmt = (price: number, cur: string) => {
     if (cur === 'USD') return `$${price.toLocaleString('en-US')}`;
@@ -40,13 +45,25 @@ export default function PropertyCard({ property }: { property: Property }) {
           {property.featured && <span className="badge-featured">★ Destacado</span>}
         </div>
 
-        {/* Like */}
-        <button onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
-          aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-          aria-pressed={liked}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-navy-950/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-navy-900 transition-all">
-          <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-red-400 fill-red-400' : 'text-white/60'}`} />
-        </button>
+        {/* Action buttons top-right */}
+        <div className="absolute top-3 right-3 flex flex-col gap-1.5">
+          <button onClick={(e) => { e.preventDefault(); toggle(property.id); }}
+            aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+            aria-pressed={liked}
+            className="w-8 h-8 rounded-full bg-navy-950/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-navy-900 transition-all">
+            <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-red-400 fill-red-400' : 'text-white/60'}`} />
+          </button>
+          <button onClick={(e) => { e.preventDefault(); compared ? remove(property.id) : add(property); }}
+            aria-label={compared ? 'Quitar de comparación' : 'Agregar a comparación'}
+            aria-pressed={compared}
+            className={`w-8 h-8 rounded-full backdrop-blur-sm border flex items-center justify-center transition-all ${
+              compared
+                ? 'bg-gold-500/20 border-gold-500/50 text-gold-400'
+                : 'bg-navy-950/60 border-white/10 text-white/60 hover:bg-navy-900'
+            }`}>
+            <Scale className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         {/* Price */}
         <div className="absolute bottom-3 left-3">

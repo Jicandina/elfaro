@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, Heart } from 'lucide-react';
 import FaroLogo from '../ui/FaroLogo';
+import { useFavorites } from '../../hooks/useFavorites';
 
 const NAV = [
   { label: 'Inicio',       to: '/' },
@@ -14,6 +15,7 @@ export default function Header() {
   const [scrolled, setScrolled]   = useState(false);
   const [mobile, setMobile]       = useState(false);
   const location = useLocation();
+  const { count: favCount } = useFavorites();
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 30);
@@ -60,6 +62,15 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               +58 412-800-0000
             </a>
+            <Link to="/favoritos" aria-label="Mis favoritos"
+              className="relative p-2 text-navy-300 hover:text-gold-400 transition-colors">
+              <Heart className="w-5 h-5" />
+              {favCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gold-500 text-navy-950 text-[10px] font-bold flex items-center justify-center">
+                  {favCount}
+                </span>
+              )}
+            </Link>
             <Link to="/contacto" className="btn-primary text-sm py-2.5 px-5">
               Publicar propiedad
             </Link>

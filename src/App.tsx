@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
+import { CompareProvider } from './context/CompareContext';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -12,6 +13,7 @@ function ScrollToTop() {
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/ui/WhatsAppButton';
+import CompareBar from './components/ui/CompareBar';
 
 // Admin layout + guard
 import AdminLayout from './components/admin/AdminLayout';
@@ -23,6 +25,7 @@ import PropertiesPage from './pages/PropertiesPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import FavoritesPage from './pages/FavoritesPage';
 
 // Admin pages
 import LoginPage from './pages/admin/LoginPage';
@@ -38,49 +41,53 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppButton variant="floating" />
+      <CompareBar />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
+    <CompareProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
 
-          {/* ─── CLIENTE ──────────────────────────────────────── */}
-          <Route path="/" element={<ClientLayout><HomePage /></ClientLayout>} />
-          <Route path="/propiedades" element={<ClientLayout><PropertiesPage /></ClientLayout>} />
-          <Route path="/propiedad/:id" element={<ClientLayout><PropertyDetailPage /></ClientLayout>} />
-          <Route path="/nosotros" element={<ClientLayout><AboutPage /></ClientLayout>} />
-          <Route path="/contacto" element={<ClientLayout><ContactPage /></ClientLayout>} />
+            {/* ─── CLIENTE ──────────────────────────────────────── */}
+            <Route path="/" element={<ClientLayout><HomePage /></ClientLayout>} />
+            <Route path="/propiedades" element={<ClientLayout><PropertiesPage /></ClientLayout>} />
+            <Route path="/propiedad/:id" element={<ClientLayout><PropertyDetailPage /></ClientLayout>} />
+            <Route path="/nosotros" element={<ClientLayout><AboutPage /></ClientLayout>} />
+            <Route path="/contacto" element={<ClientLayout><ContactPage /></ClientLayout>} />
+            <Route path="/favoritos" element={<ClientLayout><FavoritesPage /></ClientLayout>} />
 
-          {/* ─── ADMIN ────────────────────────────────────────── */}
-          <Route path="/admin/login" element={<LoginPage />} />
-          <Route path="/admin" element={
-            <ProtectedRoute><AdminLayout /></ProtectedRoute>
-          }>
-            <Route index element={<DashboardPage />} />
-            <Route path="propiedades" element={<AdminPropertiesPage />} />
-            <Route path="propiedades/:id" element={<PropertyFormPage />} />
-            <Route path="nueva" element={<PropertyFormPage />} />
-            <Route path="consultas" element={<InquiriesPage />} />
-          </Route>
+            {/* ─── ADMIN ────────────────────────────────────────── */}
+            <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="/admin" element={
+              <ProtectedRoute><AdminLayout /></ProtectedRoute>
+            }>
+              <Route index element={<DashboardPage />} />
+              <Route path="propiedades" element={<AdminPropertiesPage />} />
+              <Route path="propiedades/:id" element={<PropertyFormPage />} />
+              <Route path="nueva" element={<PropertyFormPage />} />
+              <Route path="consultas" element={<InquiriesPage />} />
+            </Route>
 
-          {/* 404 */}
-          <Route path="*" element={
-            <ClientLayout>
-              <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                <p className="font-display text-7xl font-bold gradient-text">404</p>
-                <p className="text-navy-400">Página no encontrada</p>
-                <a href="/" className="btn-outline">Volver al inicio</a>
-              </div>
-            </ClientLayout>
-          } />
+            {/* 404 */}
+            <Route path="*" element={
+              <ClientLayout>
+                <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+                  <p className="font-display text-7xl font-bold gradient-text">404</p>
+                  <p className="text-navy-400">Página no encontrada</p>
+                  <a href="/" className="btn-outline">Volver al inicio</a>
+                </div>
+              </ClientLayout>
+            } />
 
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </CompareProvider>
   );
 }

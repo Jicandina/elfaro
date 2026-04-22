@@ -10,6 +10,7 @@ import { useProperty, useProperties } from '../hooks/useProperties';
 import { saveInquiry } from '../lib/api';
 import WhatsAppButton from '../components/ui/WhatsAppButton';
 import PropertyCard from '../components/ui/PropertyCard';
+import MortgageCalculator from '../components/ui/MortgageCalculator';
 
 export default function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -255,6 +256,11 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Mortgage calculator — only for sale properties */}
+            {property.operation === 'venta' && (
+              <MortgageCalculator price={property.price} currency={property.currency} />
             )}
 
             {/* Map */}
