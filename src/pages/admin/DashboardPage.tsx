@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, MessageSquare, Eye, TrendingUp, PlusCircle, ArrowRight, Clock } from 'lucide-react';
+import { Building2, MessageSquare, Eye, TrendingUp, PlusCircle, ArrowRight, Clock, DatabaseZap } from 'lucide-react';
 import { useProperties } from '../../hooks/useProperties';
+import { seedFirestore } from '../../lib/seed';
 
 const RECENT_INQUIRIES = [
   { name: 'Carlos Méndez',  property: 'Penthouse en Altamira',         time: 'Hace 12 min',   status: 'nueva' },
@@ -11,6 +13,20 @@ const RECENT_INQUIRIES = [
 
 export default function DashboardPage() {
   const { properties, loading } = useProperties({});
+  const [seeding, setSeeding]   = useState(false);
+  const [seedMsg, setSeedMsg]   = useState('');
+
+  const handleSeed = async () => {
+    setSeeding(true); setSeedMsg('');
+    try {
+      const { added, skipped } = await seedFirestore();
+      setSeedMsg(`✓ ${added} propiedades importadas${skipped ? `, ${skipped} ya existían` : ''}. Recarga la página.`);
+    } catch (e) {
+      setSeedMsg(`Error: ${e instanceof Error ? e.message : 'Revisa las reglas de Firestore.'}`);
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const total      = properties.length;
   const enVenta    = properties.filter((p) => p.operation === 'venta').length;
@@ -24,6 +40,23 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 max-w-6xl">
+
+      {/* Seed banner — shows only when DB is empty */}
+      {!loading && properties.length === 0 && (
+        <div className="card p-5 border-gold-500/30 bg-gold-500/5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <DatabaseZap className="w-6 h-6 text-gold-400 shrink-0" />
+          <div className="flex-1">
+            <p className="text-white font-semibold text-sm">Base de datos vacía</p>
+            <p className="text-navy-400 text-xs mt-0.5">Importa las 12 propiedades demo para empezar a usar el panel.</p>
+            {seedMsg && <p className={`text-xs mt-1 ${seedMsg.startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>{seedMsg}</p>}
+          </div>
+          <button onClick={handleSeed} disabled={seeding}
+            className="btn-primary text-sm py-2 px-4 shrink-0 disabled:opacity-60">
+            {seeding ? 'Importando...' : 'Importar datos demo'}
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
