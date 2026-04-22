@@ -23,21 +23,27 @@ export default function PropertyCard({ property }: { property: Property }) {
         <img
           src={!imgError ? property.images[0] : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80'}
           alt={property.title}
+          loading="lazy"
           onError={() => setImgError(true)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent" />
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex gap-2">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           <span className={property.operation === 'alquiler' ? 'badge-rent' : 'badge-sale'}>
             {property.operation === 'alquiler' ? 'Alquiler' : 'Venta'}
+          </span>
+          <span className="badge bg-navy-950/70 text-navy-300 border border-white/10 capitalize backdrop-blur-sm">
+            {property.type}
           </span>
           {property.featured && <span className="badge-featured">★ Destacado</span>}
         </div>
 
         {/* Like */}
         <button onClick={(e) => { e.preventDefault(); setLiked(!liked); }}
+          aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          aria-pressed={liked}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-navy-950/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-navy-900 transition-all">
           <Heart className={`w-4 h-4 transition-colors ${liked ? 'text-red-400 fill-red-400' : 'text-white/60'}`} />
         </button>

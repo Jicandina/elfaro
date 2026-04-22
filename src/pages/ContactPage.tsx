@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import PageTransition from '../components/ui/PageTransition';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle2, MessageCircle } from 'lucide-react';
 import WhatsAppButton, { buildWaUrl } from '../components/ui/WhatsAppButton';
 import { saveInquiry } from '../lib/api';
@@ -16,21 +17,32 @@ export default function ContactPage() {
   const [form, setForm]     = useState({ name: '', phone: '', email: '', service: '', message: '' });
   const [sent, setSent]     = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError]   = useState('');
+
+  useEffect(() => {
+    document.title = 'Contacto | El Faro Inmobiliaria';
+    return () => { document.title = 'El Faro Inmobiliaria'; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       await saveInquiry({
         name: form.name, phone: form.phone, email: form.email,
         property: form.service, propertyId: '', message: form.message,
       });
-    } catch { /* fallo silencioso */ }
-    setLoading(false);
-    setSent(true);
+      setSent(true);
+    } catch {
+      setError('No pudimos enviar tu mensaje. Intenta de nuevo o escríbenos por WhatsApp.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
+    <PageTransition>
     <div className="pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -170,6 +182,7 @@ export default function ContactPage() {
                         : <><Send className="w-4 h-4" /> Enviar mensaje</>
                       }
                     </button>
+                    {error && <p className="text-red-400 text-xs text-center">{error}</p>}
                     <p className="text-navy-600 text-xs text-center">
                       Al enviar aceptas que nos comuniquemos contigo vía WhatsApp o correo.
                     </p>
@@ -181,5 +194,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

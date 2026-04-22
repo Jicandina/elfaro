@@ -9,12 +9,14 @@ export default function SearchBar({ onSearch }: Props) {
   const [operation, setOperation] = useState<'venta' | 'alquiler'>('venta');
   const [city, setCity]           = useState('');
   const [type, setType]           = useState('');
+  const [minPrice, setMinPrice]   = useState('');
   const [maxPrice, setMaxPrice]   = useState('');
 
   const submit = () => {
     const f: SearchFilters = { operation };
     if (city) f.city = city;
     if (type) f.propertyType = type as SearchFilters['propertyType'];
+    if (minPrice) f.minPrice = Number(minPrice);
     if (maxPrice) f.maxPrice = Number(maxPrice);
     onSearch(f);
   };
@@ -57,16 +59,19 @@ export default function SearchBar({ onSearch }: Props) {
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
         </div>
 
-        {/* Price */}
-        <div className="relative">
-          <select value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="select-field pr-8">
-            <option value="">Precio máximo</option>
-            <option value="100000">Hasta $100,000</option>
-            <option value="250000">Hasta $250,000</option>
-            <option value="500000">Hasta $500,000</option>
-            <option value="1000000">Hasta $1,000,000</option>
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
+        {/* Price range */}
+        <div className="flex items-center gap-2">
+          <input
+            type="number" min="0" placeholder="Precio mín. $"
+            value={minPrice} onChange={(e) => setMinPrice(e.target.value)}
+            className="input-field"
+          />
+          <span className="text-navy-500 text-sm font-medium shrink-0">–</span>
+          <input
+            type="number" min="0" placeholder="Precio máx. $"
+            value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
+            className="input-field"
+          />
         </div>
 
         {/* Search btn */}

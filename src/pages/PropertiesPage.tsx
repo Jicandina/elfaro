@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import PageTransition from '../components/ui/PageTransition';
 import { useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal, LayoutGrid, List, ArrowUpDown, X, ChevronDown } from 'lucide-react';
 import PropertyCard from '../components/ui/PropertyCard';
@@ -45,10 +46,16 @@ export default function PropertiesPage() {
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
+  useEffect(() => {
+    document.title = 'Propiedades | El Faro Inmobiliaria';
+    return () => { document.title = 'El Faro Inmobiliaria'; };
+  }, []);
+
   // Local filter state
   const [op, setOp]           = useState<OperationType | ''>('');
   const [type, setType]       = useState<PropertyType | ''>('');
   const [city, setCity]       = useState('');
+  const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [minBeds, setMinBeds] = useState('');
 
@@ -68,18 +75,48 @@ export default function PropertiesPage() {
     if (op)       f.operation    = op;
     if (type)     f.propertyType = type;
     if (city)     f.city         = city;
-    if (maxPrice) f.maxPrice     = Number(maxPrice);
+    const min = Number(minPrice), max = Number(maxPrice);
+    if (minPrice && !isNaN(min) && min > 0) f.minPrice = min;
+    if (maxPrice && !isNaN(max) && max > 0) f.maxPrice = max;
     if (minBeds)  f.minBedrooms  = Number(minBeds);
     setFilters(f);
     setShowFilters(false);
   };
 
   const clearFilters = () => {
-    setOp(''); setType(''); setCity(''); setMaxPrice(''); setMinBeds('');
+    setOp(''); setType(''); setCity(''); setMinPrice(''); setMaxPrice(''); setMinBeds('');
     setFilters({});
   };
 
+  const removeFilter = (key: keyof SearchFilters) => {
+    const next = { ...filters };
+    delete next[key];
+    setFilters(next);
+    if (key === 'operation')    setOp('');
+    if (key === 'propertyType') setType('');
+    if (key === 'city')         setCity('');
+    if (key === 'minPrice')     setMinPrice('');
+    if (key === 'maxPrice')     setMaxPrice('');
+    if (key === 'minBedrooms')  setMinBeds('');
+  };
+
+  const filterChips = ([
+    filters.operation    && { key: 'operation'    as const, label: filters.operation === 'venta' ? 'Venta' : 'Alquiler' },
+    filters.propertyType && { key: 'propertyType' as const, label: PROPERTY_TYPES.find(t => t.value === filters.propertyType)?.label ?? filters.propertyType },
+    filters.city         && { key: 'city'         as const, label: filters.city },
+    filters.minPrice     && { key: 'minPrice'     as const, label: `Desde $${filters.minPrice.toLocaleString()}` },
+    filters.maxPrice     && { key: 'maxPrice'     as const, label: `Hasta $${filters.maxPrice.toLocaleString()}` },
+    filters.minBedrooms  && { key: 'minBedrooms'  as const, label: `${filters.minBedrooms}+ hab.` },
+  ].filter(Boolean)) as { key: keyof SearchFilters; label: string }[];
+
   const hasFilters = Object.keys(filters).length > 0;
+
+  const [showTop, setShowTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const { properties, loading } = useProperties(filters);
 
@@ -92,6 +129,7 @@ export default function PropertiesPage() {
   }, [properties, sort]);
 
   return (
+    <PageTransition>
     <div className="pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -169,10 +207,27 @@ export default function PropertiesPage() {
           </div>
         </div>
 
+        {/* Active filter chips */}
+        {filterChips.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {filterChips.map((chip) => (
+              <span key={chip.key}
+                className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-medium">
+                {chip.label}
+                <button onClick={() => removeFilter(chip.key)}
+                  aria-label={`Quitar filtro ${chip.label}`}
+                  className="hover:text-white transition-colors rounded-full">
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Filter panel */}
         {showFilters && (
           <div className="card p-5 mb-6 border-gold-500/20">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
               {/* Operation */}
               <div>
                 <label className="block text-xs text-navy-400 mb-1.5 font-medium">Operación</label>
@@ -200,16 +255,22 @@ export default function PropertiesPage() {
                   {VENEZUELAN_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
-              {/* Price */}
-              <div>
-                <label className="block text-xs text-navy-400 mb-1.5 font-medium">Precio máximo</label>
-                <select value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className="select-field">
-                  <option value="">Sin límite</option>
-                  <option value="100000">$100,000</option>
-                  <option value="250000">$250,000</option>
-                  <option value="500000">$500,000</option>
-                  <option value="1000000">$1,000,000</option>
-                </select>
+              {/* Price range */}
+              <div className="col-span-2 sm:col-span-3 lg:col-span-2">
+                <label className="block text-xs text-navy-400 mb-1.5 font-medium">Rango de precio (USD)</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number" min="0" placeholder="Mínimo"
+                    value={minPrice} onChange={(e) => setMinPrice(e.target.value)}
+                    className="input-field"
+                  />
+                  <span className="text-navy-500 text-sm font-medium shrink-0">–</span>
+                  <input
+                    type="number" min="0" placeholder="Máximo"
+                    value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
+                    className="input-field"
+                  />
+                </div>
               </div>
               {/* Bedrooms */}
               <div>
@@ -254,6 +315,16 @@ export default function PropertiesPage() {
           </div>
         )}
       </div>
+
+      {/* Back to top */}
+      {showTop && (
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Volver arriba"
+          className="fixed bottom-24 right-5 z-40 w-10 h-10 rounded-full bg-navy-800 border border-white/10 shadow-xl flex items-center justify-center text-navy-300 hover:text-gold-400 hover:border-gold-500/40 transition-all">
+          ↑
+        </button>
+      )}
     </div>
+    </PageTransition>
   );
 }

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import PageTransition from '../components/ui/PageTransition';
 import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft, BedDouble, Bath, Car, Maximize2, MapPin,
@@ -20,7 +21,27 @@ export default function PropertyDetailPage() {
   const [liked, setLiked]     = useState(false);
   const [sent, setSent]       = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError]     = useState('');
   const [form, setForm]       = useState({ name: '', phone: '', email: '', message: '' });
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!lightbox || !property) return;
+    const n = property.images.length;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft')  setImg((i) => (i - 1 + n) % n);
+      if (e.key === 'ArrowRight') setImg((i) => (i + 1) % n);
+      if (e.key === 'Escape')     setLightbox(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightbox, property]);
+
+  useEffect(() => {
+    if (!property) return;
+    document.title = `${property.title} | El Faro Inmobiliaria`;
+    return () => { document.title = 'El Faro Inmobiliaria'; };
+  }, [property]);
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen">
@@ -51,14 +72,18 @@ export default function PropertyDetailPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
+    setError('');
     try {
       await saveInquiry({
         name: form.name, phone: form.phone, email: form.email,
         property: property!.title, propertyId: property!.id, message: form.message,
       });
-    } catch { /* guardado en Firestore, fallo silencioso */ }
-    setSending(false);
-    setSent(true);
+      setSent(true);
+    } catch {
+      setError('No pudimos enviar tu consulta. Intenta de nuevo o contáctanos por WhatsApp.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const similar = all
@@ -66,27 +91,38 @@ export default function PropertyDetailPage() {
     .slice(0, 3);
 
   return (
+    <PageTransition>
     <div className="pt-20 pb-20">
       {/* Lightbox */}
       {lightbox && (
         <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
-          onClick={() => setLightbox(false)}>
-          <button className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors">
+          onClick={() => setLightbox(false)}
+          onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null) return;
+            const delta = e.changedTouches[0].clientX - touchStartX.current;
+            if (delta > 50) prev();
+            else if (delta < -50) next();
+            touchStartX.current = null;
+          }}>
+          <button aria-label="Cerrar galería" className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors">
             <X className="w-8 h-8" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); prev(); }}
+          <button aria-label="Imagen anterior" onClick={(e) => { e.stopPropagation(); prev(); }}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all">
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <img src={property.images[img]} alt="" onClick={(e) => e.stopPropagation()}
+          <img src={property.images[img]}
+            alt={`${property.title} — foto ${img + 1} de ${property.images.length}`}
+            onClick={(e) => e.stopPropagation()}
             className="max-w-[90vw] max-h-[90vh] object-contain rounded-xl" />
-          <button onClick={(e) => { e.stopPropagation(); next(); }}
+          <button aria-label="Imagen siguiente" onClick={(e) => { e.stopPropagation(); next(); }}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all">
             <ChevronRight className="w-6 h-6" />
           </button>
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
             {property.images.map((_, i) => (
-              <button key={i} onClick={(e) => { e.stopPropagation(); setImg(i); }}
+              <button key={i} aria-label={`Ver foto ${i + 1}`} onClick={(e) => { e.stopPropagation(); setImg(i); }}
                 className={`w-2 h-2 rounded-full transition-all ${i === img ? 'bg-gold-400 scale-125' : 'bg-white/30'}`} />
             ))}
           </div>
@@ -141,7 +177,7 @@ export default function PropertyDetailPage() {
                     className={`shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
                       i === img ? 'border-gold-500' : 'border-transparent opacity-50 hover:opacity-75'
                     }`}>
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <img src={src} alt={`${property.title} — miniatura ${i + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -158,6 +194,8 @@ export default function PropertyDetailPage() {
               </div>
               <div className="flex gap-2 shrink-0">
                 <button onClick={() => setLiked(!liked)}
+                  aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  aria-pressed={liked}
                   className="w-10 h-10 rounded-xl bg-navy-800 border border-white/10 flex items-center justify-center hover:border-gold-500/30 transition-all">
                   <Heart className={`w-5 h-5 ${liked ? 'text-red-400 fill-red-400' : 'text-navy-400'}`} />
                 </button>
@@ -306,6 +344,7 @@ export default function PropertyDetailPage() {
                         : <><Send className="w-4 h-4" /> Enviar consulta</>
                       }
                     </button>
+                    {error && <p className="text-red-400 text-xs text-center">{error}</p>}
                   </form>
                 )}
               </div>
@@ -326,5 +365,6 @@ export default function PropertyDetailPage() {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 }

@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PageTransition from '../components/ui/PageTransition';
 import HeroSection from '../components/home/HeroSection';
 import SearchBar from '../components/home/SearchBar';
 import FeaturedProperties from '../components/home/FeaturedProperties';
@@ -22,6 +23,11 @@ export default function HomePage() {
   const [filters, setFilters] = useState<SearchFilters>({});
   const { properties, loading } = useProperties(filters);
 
+  useEffect(() => {
+    document.title = 'El Faro Inmobiliaria — Tu hogar en Venezuela';
+    return () => { document.title = 'El Faro Inmobiliaria'; };
+  }, []);
+
   const scrollToSearch = () =>
     searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -29,7 +35,8 @@ export default function HomePage() {
   const hasFilters = Object.keys(filters).length > 0;
 
   return (
-    <>
+    <PageTransition>
+      <>
       <HeroSection onSearch={scrollToSearch} />
 
       {/* Search */}
@@ -84,6 +91,7 @@ export default function HomePage() {
 
       {/* CTA */}
       <ContactCTA />
-    </>
+      </>
+    </PageTransition>
   );
 }

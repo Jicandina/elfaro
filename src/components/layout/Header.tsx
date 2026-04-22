@@ -36,16 +36,21 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {NAV.map((link) => (
+            {NAV.map((link) => {
+              const active = link.to === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(link.to.replace(/s$/, ''));
+              return (
               <Link key={link.to} to={link.to}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                  location.pathname === link.to
+                  active
                     ? 'text-gold-400 bg-gold-500/10'
                     : 'text-navy-200 hover:text-white hover:bg-white/5'
                 }`}>
                 {link.label}
               </Link>
-            ))}
+              );
+            })}
           </nav>
 
           {/* CTA */}
@@ -71,16 +76,19 @@ export default function Header() {
       {/* Mobile menu */}
       {mobile && (
         <div className="md:hidden bg-navy-950/98 backdrop-blur-md border-t border-white/5 px-4 py-4 space-y-1">
-          {NAV.map((link) => (
+          {NAV.map((link) => {
+            const active = link.to === '/'
+              ? location.pathname === '/'
+              : location.pathname.startsWith(link.to.replace(/s$/, ''));
+            return (
             <Link key={link.to} to={link.to}
               className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === link.to
-                  ? 'bg-gold-500/10 text-gold-400'
-                  : 'text-navy-200 hover:bg-white/5'
+                active ? 'bg-gold-500/10 text-gold-400' : 'text-navy-200 hover:bg-white/5'
               }`}>
               {link.label}
             </Link>
-          ))}
+            );
+          })}
           <div className="pt-2">
             <Link to="/contacto" className="btn-primary w-full text-sm py-3">
               Publicar propiedad

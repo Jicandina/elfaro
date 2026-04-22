@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PageTransition from '../components/ui/PageTransition';
 import { Shield, Heart, TrendingUp, Star, CheckCircle2, Users } from 'lucide-react';
 
 const TEAM = [
@@ -25,7 +27,13 @@ const MILESTONES = [
 ];
 
 export default function AboutPage() {
+  useEffect(() => {
+    document.title = 'Nosotros | El Faro Inmobiliaria';
+    return () => { document.title = 'El Faro Inmobiliaria'; };
+  }, []);
+
   return (
+    <PageTransition>
     <div className="pt-24 pb-20">
 
       {/* Hero */}
@@ -168,5 +176,6 @@ export default function AboutPage() {
         </div>
       </section>
     </div>
+    </PageTransition>
   );
 }
