@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Save, ArrowLeft, ImagePlus, X, Loader2, CheckCircle2, Star,
+  Save, ArrowLeft, ImagePlus, X, Loader2, CheckCircle2, Star, Upload, Link as LinkIcon,
 } from 'lucide-react';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../lib/firebase';
 import { fetchProperty, createProperty, updateProperty } from '../../lib/api';
 import type { PropertyType, OperationType } from '../../types/property';
 import { VENEZUELAN_CITIES } from '../../types/property';
@@ -36,8 +38,11 @@ export default function PropertyFormPage() {
   const isEdit = Boolean(id);
 
   const [form, setForm]         = useState<FormData>(EMPTY);
-  const [imageUrls, setImageUrls] = useState<string[]>(['']);
-  const [loading, setLoading]   = useState(isEdit);
+  const [imageUrls, setImageUrls]     = useState<string[]>([]);
+  const [uploading, setUploading]     = useState(false);
+  const [uploadProgress, setProgress] = useState(0);
+  const [loading, setLoading]         = useState(isEdit);
+  const fileInputRef                  = useRef<HTMLInputElement>(null);
   const [saving, setSaving]     = useState(false);
   const [saved, setSaved]       = useState(false);
 
@@ -60,6 +65,26 @@ export default function PropertyFormPage() {
 
   const set = (key: keyof FormData, value: FormData[keyof FormData]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const handleFileUpload = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach((file) => {
+      if (!file.type.startsWith('image/')) return;
+      setUploading(true);
+      const storageRef = ref(storage, `properties/${Date.now()}_${file.name}`);
+      const task = uploadBytesResumable(storageRef, file);
+      task.on('state_changed',
+        (snap) => setProgress(Math.round(snap.bytesTransferred / snap.totalBytes * 100)),
+        (err) => { console.error(err); setUploading(false); },
+        async () => {
+          const url = await getDownloadURL(task.snapshot.ref);
+          setImageUrls((prev) => [...prev, url]);
+          setUploading(false);
+          setProgress(0);
+        }
+      );
+    });
+  };
 
   const toggleAmenity = (a: string) =>
     set('amenities', form.amenities.includes(a)
@@ -252,36 +277,75 @@ export default function PropertyFormPage() {
         </Section>
 
         {/* Images */}
-        <Section title="Imágenes (URLs)">
-          <p className="text-navy-500 text-xs -mt-2">
-            Ingresa las URLs de las imágenes. Conecta Firebase Storage para subida directa.
-          </p>
-          <div className="space-y-2">
-            {imageUrls.map((url, i) => (
-              <div key={i} className="flex gap-2">
-                <input type="url" value={url}
-                  onChange={(e) => {
-                    const next = [...imageUrls];
-                    next[i] = e.target.value;
-                    setImageUrls(next);
-                  }}
-                  placeholder="https://..."
-                  className="input-field flex-1" />
-                {imageUrls.length > 1 && (
-                  <button type="button"
-                    onClick={() => setImageUrls(imageUrls.filter((_, j) => j !== i))}
-                    className="p-2 text-navy-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+        <Section title="Fotos de la propiedad">
+          {/* Upload zone */}
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); handleFileUpload(e.dataTransfer.files); }}
+            className="border-2 border-dashed border-navy-700 hover:border-gold-500/50 rounded-xl p-8 text-center cursor-pointer transition-all group">
+            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
+              onChange={(e) => handleFileUpload(e.target.files)} />
+            {uploading ? (
+              <div className="space-y-2">
+                <Loader2 className="w-8 h-8 text-gold-400 animate-spin mx-auto" />
+                <p className="text-navy-400 text-sm">Subiendo... {uploadProgress}%</p>
+                <div className="h-1.5 bg-navy-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-gold-500 transition-all" style={{ width: `${uploadProgress}%` }} />
+                </div>
               </div>
-            ))}
-            <button type="button" onClick={() => setImageUrls([...imageUrls, ''])}
-              className="flex items-center gap-2 text-sm text-gold-400 hover:text-gold-300 transition-colors mt-1">
-              <ImagePlus className="w-4 h-4" />
-              Agregar imagen
-            </button>
+            ) : (
+              <>
+                <Upload className="w-8 h-8 text-navy-600 group-hover:text-gold-400 mx-auto mb-2 transition-colors" />
+                <p className="text-navy-400 text-sm">Arrastra fotos aquí o <span className="text-gold-400">haz clic para seleccionar</span></p>
+                <p className="text-navy-600 text-xs mt-1">JPG, PNG, WebP — múltiples archivos</p>
+              </>
+            )}
           </div>
+
+          {/* URL manual */}
+          <details className="group">
+            <summary className="flex items-center gap-2 text-xs text-navy-500 hover:text-navy-300 cursor-pointer transition-colors list-none">
+              <LinkIcon className="w-3.5 h-3.5" />
+              O añadir por URL
+            </summary>
+            <div className="mt-2 flex gap-2">
+              <input type="url" id="urlInput" placeholder="https://..." className="input-field flex-1 text-sm" />
+              <button type="button"
+                onClick={() => {
+                  const input = document.getElementById('urlInput') as HTMLInputElement;
+                  if (input.value) { setImageUrls(prev => [...prev, input.value]); input.value = ''; }
+                }}
+                className="btn-navy text-xs py-2 px-3">Añadir</button>
+            </div>
+          </details>
+
+          {/* Preview grid */}
+          {imageUrls.length > 0 && (
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-2">
+              {imageUrls.map((url, i) => (
+                <div key={i} className="relative group/img aspect-video rounded-lg overflow-hidden bg-navy-800">
+                  <img src={url} alt={`Foto ${i + 1}`} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button"
+                      onClick={() => setImageUrls(imageUrls.filter((_, j) => j !== i))}
+                      className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {i === 0 && (
+                    <span className="absolute top-1 left-1 text-[9px] bg-gold-500 text-navy-950 font-bold px-1.5 py-0.5 rounded">
+                      PORTADA
+                    </span>
+                  )}
+                </div>
+              ))}
+              <button type="button" onClick={() => fileInputRef.current?.click()}
+                className="aspect-video rounded-lg border-2 border-dashed border-navy-700 hover:border-gold-500/40 flex items-center justify-center transition-all">
+                <ImagePlus className="w-5 h-5 text-navy-600" />
+              </button>
+            </div>
+          )}
         </Section>
 
         {/* Contact */}
