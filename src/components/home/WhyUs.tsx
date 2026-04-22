@@ -1,42 +1,32 @@
+import { useEffect, useRef, useState } from 'react';
 import { Shield, Users, TrendingUp, Star, Clock, Key } from 'lucide-react';
 
 const REASONS = [
-  {
-    icon: Shield,
-    title: 'Propiedades verificadas',
-    description: 'Cada propiedad es inspeccionada físicamente por nuestro equipo antes de publicarse. Cero sorpresas.',
-  },
-  {
-    icon: Users,
-    title: 'Asesores certificados',
-    description: 'Nuestros agentes tienen más de 8 años de experiencia promedio en el mercado inmobiliario venezolano.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Precios reales de mercado',
-    description: 'Accede a valoraciones precisas basadas en datos actualizados. Ni más ni menos de lo que vale.',
-  },
-  {
-    icon: Star,
-    title: 'Servicio de excelencia',
-    description: 'Atención personalizada en cada etapa del proceso. Estamos contigo desde la búsqueda hasta la firma.',
-  },
-  {
-    icon: Clock,
-    title: 'Respuesta en menos de 1 hora',
-    description: 'Nuestro equipo responde rápido. Ningún cliente espera más de una hora por una consulta.',
-  },
-  {
-    icon: Key,
-    title: 'Gestión completa del cierre',
-    description: 'Nos encargamos de toda la documentación legal, notaría y trámites para que tú no tengas que preocuparte.',
-  },
+  { icon: Shield,     title: 'Propiedades verificadas',       description: 'Cada propiedad es inspeccionada físicamente por nuestro equipo antes de publicarse. Cero sorpresas.' },
+  { icon: Users,      title: 'Asesores certificados',         description: 'Nuestros agentes tienen más de 8 años de experiencia promedio en el mercado inmobiliario venezolano.' },
+  { icon: TrendingUp, title: 'Precios reales de mercado',     description: 'Accede a valoraciones precisas basadas en datos actualizados. Ni más ni menos de lo que vale.' },
+  { icon: Star,       title: 'Servicio de excelencia',        description: 'Atención personalizada en cada etapa del proceso. Estamos contigo desde la búsqueda hasta la firma.' },
+  { icon: Clock,      title: 'Respuesta en menos de 1 hora',  description: 'Nuestro equipo responde rápido. Ningún cliente espera más de una hora por una consulta.' },
+  { icon: Key,        title: 'Gestión completa del cierre',   description: 'Nos encargamos de toda la documentación legal, notaría y trámites para que tú no tengas que preocuparte.' },
 ];
 
 export default function WhyUs() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      {/* Header */}
       <div className="text-center mb-14">
         <div className="section-accent mx-auto" />
         <h2 className="section-title">¿Por qué elegir El Faro?</h2>
@@ -45,10 +35,15 @@ export default function WhyUs() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {REASONS.map(({ icon: Icon, title, description }) => (
+      <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {REASONS.map(({ icon: Icon, title, description }, i) => (
           <div key={title}
-            className="card p-6 group hover:border-gold-500/30 hover:-translate-y-1 transition-all duration-300">
+            className="card p-6 group hover:border-gold-500/30 hover:-translate-y-1 transition-all duration-300"
+            style={{
+              opacity:    inView ? 1 : 0,
+              transform:  inView ? 'translateY(0)' : 'translateY(24px)',
+              transition: `opacity 0.5s ease ${i * 0.08}s, transform 0.5s ease ${i * 0.08}s, border-color 0.3s, translate 0.3s`,
+            }}>
             <div className="w-12 h-12 rounded-2xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center mb-5 group-hover:bg-gold-500/20 group-hover:border-gold-500/40 transition-all duration-300">
               <Icon className="w-6 h-6 text-gold-400" />
             </div>
