@@ -18,11 +18,9 @@ function SwipeCard({
 }) {
   const [pos, setPos]       = useState({ x: 0, y: 0 });
   const [dragging, setDrag] = useState(false);
-  const [leaving, setLeave] = useState<'left' | 'right' | null>(null);
   const startRef            = useRef({ x: 0, y: 0 });
 
   const triggerSwipe = (dir: 'left' | 'right') => {
-    setLeave(dir);
     setPos({ x: dir === 'right' ? 600 : -600, y: 0 });
     setTimeout(() => onSwipe(dir), 350);
   };
@@ -148,7 +146,6 @@ export default function SwipePage() {
   const [liked, setLiked]       = useState(0);
   const [skipped, setSkipped]   = useState(0);
   const [done, setDone]         = useState(false);
-  const cardRef                 = useRef<SwipeCardHandle>(null);
 
   useEffect(() => {
     document.title = 'Explorar Propiedades | El Faro Inmobiliaria';
@@ -277,5 +274,3 @@ export default function SwipePage() {
   );
 }
 
-// Placeholder to satisfy TypeScript
-interface SwipeCardHandle {}

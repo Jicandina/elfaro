@@ -1,4 +1,4 @@
-import type { SearchFilters, PropertyType, OperationType } from '../types/property';
+import type { SearchFilters, PropertyType } from '../types/property';
 
 const CITIES: [string, string][] = [
   ['caracas', 'Caracas'], ['valencia', 'Valencia'], ['maracaibo', 'Maracaibo'],

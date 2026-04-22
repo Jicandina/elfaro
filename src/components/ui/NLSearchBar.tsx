@@ -16,11 +16,10 @@ interface Props {
 }
 
 export default function NLSearchBar({ onSearch, onClear }: Props) {
-  const [text, setText]         = useState('');
-  const [active, setActive]     = useState(false);
-  const [tags, setTags]         = useState<{ label: string; color: string }[]>([]);
-  const [example, setExample]   = useState(0);
-  const inputRef                = useRef<HTMLInputElement>(null);
+  const [text, setText]     = useState('');
+  const [active, setActive] = useState(false);
+  const [tags, setTags]     = useState<{ label: string; color: string }[]>([]);
+  const inputRef            = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (val = text) => {
     if (!val.trim()) return;
