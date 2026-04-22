@@ -1,0 +1,21 @@
+{
+  "name": "El Faro Inmobiliaria",
+  "short_name": "El Faro",
+  "description": "Compra, venta y alquiler de propiedades premium en Venezuela",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#0a0f1e",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Ver propiedades", "url": "/propiedades", "description": "Explorar inmuebles disponibles" },
+    { "name": "Contactar",       "url": "/contacto",    "description": "Hablar con un asesor" }
+  ],
+  "screenshots": [
+    { "src": "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1280&q=80", "sizes": "1280x720", "type": "image/jpeg", "form_factor": "wide" }
+  ]
+}

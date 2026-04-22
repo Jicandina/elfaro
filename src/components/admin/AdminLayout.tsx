@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import FaroLogo from '../ui/FaroLogo';
+import { useNewInquiriesCount } from '../../hooks/useNewInquiriesCount';
 
 const NAV_ITEMS = [
   { to: '/admin',            label: 'Dashboard',    icon: LayoutDashboard, end: true },
@@ -18,6 +19,7 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const newInquiries = useNewInquiriesCount();
 
   const handleLogout = async () => {
     await logout();
@@ -51,7 +53,12 @@ export default function AdminLayout() {
             }
           >
             <Icon className="w-4 h-4 shrink-0" />
-            {label}
+            <span className="flex-1">{label}</span>
+            {label === 'Consultas' && newInquiries > 0 && (
+              <span className="w-5 h-5 rounded-full bg-green-500 text-white text-[10px] font-bold flex items-center justify-center">
+                {newInquiries > 9 ? '9+' : newInquiries}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>
@@ -118,7 +125,11 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3 ml-auto">
             <button className="relative p-2 text-navy-400 hover:text-white transition-colors">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gold-400 rounded-full" />
+              {newInquiries > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-green-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {newInquiries > 9 ? '9+' : newInquiries}
+                </span>
+              )}
             </button>
 
             <div className="flex items-center gap-2 pl-3 border-l border-white/10">

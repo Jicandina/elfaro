@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://elfaro.pages.dev/sitemap.xml
