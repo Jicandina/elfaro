@@ -36,6 +36,7 @@ const PropertyDetailPage = lazy(() => import('./pages/PropertyDetailPage'));
 const AboutPage          = lazy(() => import('./pages/AboutPage'));
 const ContactPage        = lazy(() => import('./pages/ContactPage'));
 const FavoritesPage      = lazy(() => import('./pages/FavoritesPage'));
+const SwipePage          = lazy(() => import('./pages/SwipePage'));
 
 // Lazy-loaded admin pages
 const LoginPage           = lazy(() => import('./pages/admin/LoginPage'));
@@ -73,6 +74,7 @@ export default function App() {
                 <Route path="/nosotros" element={<ClientLayout><AboutPage /></ClientLayout>} />
                 <Route path="/contacto" element={<ClientLayout><ContactPage /></ClientLayout>} />
                 <Route path="/favoritos" element={<ClientLayout><FavoritesPage /></ClientLayout>} />
+            <Route path="/explorar"  element={<ClientLayout><SwipePage /></ClientLayout>} />
 
                 {/* ─── ADMIN ────────────────────────────────────────── */}
                 <Route path="/admin/login" element={<LoginPage />} />

@@ -1,11 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import PageTransition from '../components/ui/PageTransition';
 import { useSearchParams } from 'react-router-dom';
-import { SlidersHorizontal, LayoutGrid, List, ArrowUpDown, X, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, LayoutGrid, List, ArrowUpDown, X, ChevronDown, Map } from 'lucide-react';
 import PropertyCard from '../components/ui/PropertyCard';
+import NLSearchBar from '../components/ui/NLSearchBar';
 import { useProperties } from '../hooks/useProperties';
 import type { SearchFilters, OperationType, PropertyType } from '../types/property';
 import { VENEZUELAN_CITIES } from '../types/property';
+
+const PropertyMap = lazy(() => import('../components/ui/PropertyMap'));
 
 type SortKey = 'featured' | 'price-asc' | 'price-desc' | 'newest';
 
@@ -42,7 +45,7 @@ export default function PropertiesPage() {
   const [searchParams] = useSearchParams();
   const [filters, setFilters]   = useState<SearchFilters>({});
   const [sort, setSort]         = useState<SortKey>('featured');
-  const [view, setView]         = useState<'grid' | 'list'>('grid');
+  const [view, setView]         = useState<'grid' | 'list' | 'mapa'>('grid');
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -133,6 +136,12 @@ export default function PropertiesPage() {
     <div className="pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        {/* NL Search */}
+        <NLSearchBar
+          onSearch={(f) => { setFilters(f); setShowFilters(false); }}
+          onClear={clearFilters}
+        />
+
         {/* Page header */}
         <div className="mb-8">
           <div className="section-accent" />
@@ -203,6 +212,10 @@ export default function PropertiesPage() {
             <button onClick={() => setView('list')}
               className={`p-2.5 transition-colors ${view === 'list' ? 'bg-gold-500/15 text-gold-400' : 'text-navy-500 hover:text-white'}`}>
               <List className="w-4 h-4" />
+            </button>
+            <button onClick={() => setView('mapa')}
+              className={`p-2.5 transition-colors ${view === 'mapa' ? 'bg-gold-500/15 text-gold-400' : 'text-navy-500 hover:text-white'}`}>
+              <Map className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -291,8 +304,14 @@ export default function PropertiesPage() {
           </div>
         )}
 
-        {/* Results */}
-        {loading ? (
+        {/* Map view */}
+        {view === 'mapa' && !loading && (
+          <Suspense fallback={<div className="h-[520px] rounded-2xl bg-navy-800 animate-pulse" />}>
+            <PropertyMap properties={sorted} />
+          </Suspense>
+        )}
+
+        {view !== 'mapa' && loading ? (
           <div className={`grid gap-5 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 max-w-2xl'}`}>
             {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} />)}
           </div>

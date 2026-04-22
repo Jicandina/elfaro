@@ -7,6 +7,7 @@ import { useFavorites } from '../../hooks/useFavorites';
 const NAV = [
   { label: 'Inicio',       to: '/' },
   { label: 'Propiedades',  to: '/propiedades' },
+  { label: '✦ Explorar',  to: '/explorar' },
   { label: 'Nosotros',     to: '/nosotros' },
   { label: 'Contacto',     to: '/contacto' },
 ];
