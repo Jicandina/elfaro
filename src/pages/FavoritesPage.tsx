@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ArrowLeft } from 'lucide-react';
 import { useFavorites } from '../hooks/useFavorites';
 import { useProperties } from '../hooks/useProperties';
 import PropertyCard from '../components/ui/PropertyCard';
 import PageTransition from '../components/ui/PageTransition';
+import { useSEO } from '../hooks/useSEO';
 
 export default function FavoritesPage() {
   const { ids } = useFavorites();
   const { properties, loading } = useProperties({});
 
-  useEffect(() => {
-    document.title = 'Mis Favoritos | El Faro Inmobiliaria';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
+  useSEO({
+    title: 'Mis Favoritos | El Faro Inmobiliaria',
+    description: 'Tus propiedades guardadas en El Faro Inmobiliaria. Compara y contacta fácilmente las propiedades que más te gustaron.',
+  });
 
   const favs = properties.filter(p => ids.includes(p.id));
 

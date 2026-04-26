@@ -7,6 +7,7 @@ import NLSearchBar from '../components/ui/NLSearchBar';
 import { useProperties } from '../hooks/useProperties';
 import type { SearchFilters, OperationType, PropertyType } from '../types/property';
 import { VENEZUELAN_CITIES } from '../types/property';
+import { useSEO } from '../hooks/useSEO';
 
 const PropertyMap = lazy(() => import('../components/ui/PropertyMap'));
 
@@ -49,10 +50,10 @@ export default function PropertiesPage() {
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    document.title = 'Propiedades | El Faro Inmobiliaria';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
+  useSEO({
+    title: 'Propiedades | El Faro Inmobiliaria',
+    description: 'Explora cientos de propiedades en Venezuela. Apartamentos, casas, oficinas y locales en venta y alquiler en Caracas, Valencia, Maracaibo y más ciudades.',
+  });
 
   // Local filter state
   const [op, setOp]           = useState<OperationType | ''>('');

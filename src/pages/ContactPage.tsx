@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PageTransition from '../components/ui/PageTransition';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle2, MessageCircle } from 'lucide-react';
 import WhatsAppButton, { buildWaUrl } from '../components/ui/WhatsAppButton';
 import { saveInquiry } from '../lib/api';
+import { useSEO } from '../hooks/useSEO';
 
 const SERVICES = [
   'Quiero comprar una propiedad',
@@ -19,10 +20,10 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError]   = useState('');
 
-  useEffect(() => {
-    document.title = 'Contacto | El Faro Inmobiliaria';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
+  useSEO({
+    title: 'Contacto | El Faro Inmobiliaria',
+    description: 'Contáctanos para comprar, vender o alquilar una propiedad en Venezuela. Asesores disponibles por teléfono, correo y WhatsApp.',
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -11,15 +11,28 @@ import { saveInquiry } from '../lib/api';
 import WhatsAppButton from '../components/ui/WhatsAppButton';
 import PropertyCard from '../components/ui/PropertyCard';
 import MortgageCalculator from '../components/ui/MortgageCalculator';
+import { useFavorites } from '../hooks/useFavorites';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
+import Toast from '../components/ui/Toast';
+import { useSEO } from '../hooks/useSEO';
 
 export default function PropertyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { property, loading } = useProperty(id ?? '');
   const { properties: all }   = useProperties({});
 
+  const { toggle: toggleFav, isFav } = useFavorites();
+  const { recentIds } = useRecentlyViewed(id);
+  const [toast, setToast]     = useState(false);
+  const [showTop, setShowTop] = useState(false);
   const [img, setImg]         = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   const [lightbox, setLightbox] = useState(false);
-  const [liked, setLiked]     = useState(false);
   const [sent, setSent]       = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError]     = useState('');
@@ -38,11 +51,12 @@ export default function PropertyDetailPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [lightbox, property]);
 
-  useEffect(() => {
-    if (!property) return;
-    document.title = `${property.title} | El Faro Inmobiliaria`;
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, [property]);
+  useSEO({
+    title: property ? `${property.title} | El Faro Inmobiliaria` : 'El Faro Inmobiliaria',
+    description: property
+      ? `${property.title} — ${property.location.zone}, ${property.location.city}. ${property.features.area}m², ${property.features.bedrooms > 0 ? `${property.features.bedrooms} hab., ` : ''}precio ${property.currency === 'USD' ? '$' : ''}${property.price.toLocaleString()} ${property.currency}.`
+      : 'Detalle de propiedad en El Faro Inmobiliaria.',
+  });
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-screen">
@@ -66,8 +80,12 @@ export default function PropertyDetailPage() {
   const next = () => setImg((i) => (i + 1) % property.images.length);
 
   const handleShare = () => {
-    if (navigator.share) navigator.share({ title: property.title, url: window.location.href });
-    else navigator.clipboard.writeText(window.location.href);
+    if (navigator.share) {
+      navigator.share({ title: property.title, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setToast(true);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -194,11 +212,11 @@ export default function PropertyDetailPage() {
                 </div>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button onClick={() => setLiked(!liked)}
-                  aria-label={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-                  aria-pressed={liked}
+                <button onClick={() => property && toggleFav(property.id)}
+                  aria-label={property && isFav(property.id) ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  aria-pressed={property ? isFav(property.id) : false}
                   className="w-10 h-10 rounded-xl bg-navy-800 border border-white/10 flex items-center justify-center hover:border-gold-500/30 transition-all">
-                  <Heart className={`w-5 h-5 ${liked ? 'text-red-400 fill-red-400' : 'text-navy-400'}`} />
+                  <Heart className={`w-5 h-5 ${property && isFav(property.id) ? 'text-red-400 fill-red-400' : 'text-navy-400'}`} />
                 </button>
                 <button onClick={handleShare}
                   className="w-10 h-10 rounded-xl bg-navy-800 border border-white/10 flex items-center justify-center hover:border-gold-500/30 transition-all">
@@ -369,8 +387,33 @@ export default function PropertyDetailPage() {
             </div>
           </section>
         )}
+
+        {/* Recently viewed */}
+        {recentIds.length > 0 && (() => {
+          const recentProps = all.filter((p) => recentIds.includes(p.id))
+            .sort((a, b) => recentIds.indexOf(a.id) - recentIds.indexOf(b.id));
+          if (recentProps.length === 0) return null;
+          return (
+            <section className="mt-16">
+              <div className="section-accent" />
+              <h2 className="font-display text-2xl font-bold text-white mb-2">Vistas recientemente</h2>
+              <p className="text-navy-400 mb-6">Propiedades que exploraste antes</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {recentProps.slice(0, 3).map((p) => <PropertyCard key={p.id} property={p} />)}
+              </div>
+            </section>
+          );
+        })()}
       </div>
     </div>
+    {showTop && (
+      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Volver arriba"
+        className="fixed bottom-24 right-5 z-40 w-10 h-10 rounded-full bg-navy-800 border border-white/10 shadow-xl flex items-center justify-center text-navy-300 hover:text-gold-400 hover:border-gold-500/40 transition-all">
+        ↑
+      </button>
+    )}
+    <Toast message="¡Enlace copiado!" visible={toast} onHide={() => setToast(false)} />
     </PageTransition>
   );
 }

@@ -45,7 +45,6 @@ function matchesMock(p: Property, f: SearchFilters): boolean {
 // ── Read ─────────────────────────────────────────────────────────
 export async function fetchProperties(filters: SearchFilters = {}): Promise<Property[]> {
   if (USE_MOCK) {
-    await new Promise((r) => setTimeout(r, 400));
     return mockProperties.filter((p) => p.available && matchesMock(p, filters));
   }
 
@@ -70,7 +69,6 @@ export async function fetchProperties(filters: SearchFilters = {}): Promise<Prop
 
 export async function fetchProperty(id: string): Promise<Property | null> {
   if (USE_MOCK) {
-    await new Promise((r) => setTimeout(r, 300));
     return mockProperties.find((p) => p.id === id) ?? null;
   }
 

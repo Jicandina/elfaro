@@ -72,6 +72,13 @@ export default function PropertyCard({ property }: { property: Property }) {
             {property.operation === 'alquiler' && <span className="text-white/60 text-xs font-normal ml-1">/mes</span>}
           </p>
         </div>
+
+        {/* Photo count */}
+        {property.images.length > 1 && (
+          <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-full bg-navy-950/70 backdrop-blur-sm text-[10px] text-white/60 font-medium">
+            {property.images.length} fotos
+          </div>
+        )}
       </div>
 
       {/* Body */}

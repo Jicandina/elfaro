@@ -101,6 +101,19 @@ export default function Header() {
             </Link>
             );
           })}
+          <Link to="/favoritos"
+            className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+              location.pathname === '/favoritos' ? 'bg-gold-500/10 text-gold-400' : 'text-navy-200 hover:bg-white/5'
+            }`}>
+            <span className="flex items-center gap-2">
+              <Heart className="w-4 h-4" /> Favoritos
+            </span>
+            {favCount > 0 && (
+              <span className="w-5 h-5 rounded-full bg-gold-500 text-navy-950 text-[10px] font-bold flex items-center justify-center">
+                {favCount}
+              </span>
+            )}
+          </Link>
           <div className="pt-2">
             <Link to="/contacto" className="btn-primary w-full text-sm py-3">
               Publicar propiedad

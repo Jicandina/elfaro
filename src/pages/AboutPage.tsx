@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../components/ui/PageTransition';
 import { Shield, Heart, TrendingUp, Star, CheckCircle2, Users } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 const TEAM = [
   { name: 'Rafael Díaz',     role: 'Director General',          exp: '18 años en bienes raíces',      img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80' },
@@ -27,10 +27,10 @@ const MILESTONES = [
 ];
 
 export default function AboutPage() {
-  useEffect(() => {
-    document.title = 'Nosotros | El Faro Inmobiliaria';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
+  useSEO({
+    title: 'Nosotros | El Faro Inmobiliaria',
+    description: 'Conoce al equipo de El Faro Inmobiliaria. Más de 10 años de experiencia en el mercado inmobiliario venezolano, 3,000+ clientes satisfechos.',
+  });
 
   return (
     <PageTransition>

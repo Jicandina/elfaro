@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../components/ui/PageTransition';
 import HeroSection from '../components/home/HeroSection';
@@ -10,6 +10,7 @@ import Testimonials from '../components/home/Testimonials';
 import ContactCTA from '../components/home/ContactCTA';
 import { useProperties } from '../hooks/useProperties';
 import type { SearchFilters } from '../types/property';
+import { useSEO } from '../hooks/useSEO';
 
 const CATEGORIES = [
   { title: 'Apartamentos en venta',   count: '200+ propiedades', to: '/propiedades?operacion=venta&tipo=apartamento',    img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80',  badge: 'Venta' },
@@ -19,14 +20,13 @@ const CATEGORIES = [
 ];
 
 export default function HomePage() {
+  useSEO({
+    title: 'El Faro Inmobiliaria — Tu hogar en Venezuela',
+    description: 'Compra, vende o alquila propiedades en Venezuela con El Faro Inmobiliaria. Más de 10 años de experiencia, propiedades verificadas en Caracas, Valencia, Maracaibo y más.',
+  });
   const searchRef = useRef<HTMLDivElement>(null);
   const [filters, setFilters] = useState<SearchFilters>({});
   const { properties, loading } = useProperties(filters);
-
-  useEffect(() => {
-    document.title = 'El Faro Inmobiliaria — Tu hogar en Venezuela';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
 
   const scrollToSearch = () =>
     searchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

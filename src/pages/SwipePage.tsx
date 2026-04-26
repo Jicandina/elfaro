@@ -5,6 +5,7 @@ import { useProperties } from '../hooks/useProperties';
 import { useFavorites } from '../hooks/useFavorites';
 import PageTransition from '../components/ui/PageTransition';
 import type { Property } from '../types/property';
+import { useSEO } from '../hooks/useSEO';
 
 const fmt = (p: number, c: string) =>
   c === 'USD' ? `$${p.toLocaleString('en-US')}` : `${p.toLocaleString()} ${c}`;
@@ -147,10 +148,10 @@ export default function SwipePage() {
   const [skipped, setSkipped]   = useState(0);
   const [done, setDone]         = useState(false);
 
-  useEffect(() => {
-    document.title = 'Explorar Propiedades | El Faro Inmobiliaria';
-    return () => { document.title = 'El Faro Inmobiliaria'; };
-  }, []);
+  useSEO({
+    title: 'Explorar Propiedades | El Faro Inmobiliaria',
+    description: 'Descubre propiedades en Venezuela de forma divertida. Desliza para explorar apartamentos, casas y más en modo interactivo.',
+  });
 
   useEffect(() => {
     if (properties.length > 0 && queue.length === 0 && !done) {

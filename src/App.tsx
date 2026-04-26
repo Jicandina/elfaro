@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { CompareProvider } from './context/CompareContext';
@@ -91,10 +91,16 @@ export default function App() {
                 {/* 404 */}
                 <Route path="*" element={
                   <ClientLayout>
-                    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-                      <p className="font-display text-7xl font-bold gradient-text">404</p>
-                      <p className="text-navy-400">Página no encontrada</p>
-                      <a href="/" className="btn-outline">Volver al inicio</a>
+                    <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4 px-4 text-center">
+                      <p className="font-display text-8xl font-bold gradient-text select-none">404</p>
+                      <h1 className="text-white text-2xl font-display font-bold">Página no encontrada</h1>
+                      <p className="text-navy-400 max-w-sm">
+                        La página que buscas no existe o fue movida. Explora nuestras propiedades o vuelve al inicio.
+                      </p>
+                      <div className="flex flex-wrap gap-3 justify-center mt-2">
+                        <Link to="/" className="btn-primary">Volver al inicio</Link>
+                        <Link to="/propiedades" className="btn-outline">Ver propiedades</Link>
+                      </div>
                     </div>
                   </ClientLayout>
                 } />
