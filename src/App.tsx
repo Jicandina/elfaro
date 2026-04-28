@@ -19,6 +19,10 @@ function PageLoader() {
   );
 }
 
+// Global UI
+import LoadingScreen from './components/ui/LoadingScreen';
+import ScrollProgress from './components/ui/ScrollProgress';
+
 // Client layout
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -63,6 +67,8 @@ export default function App() {
       <CompareProvider>
         <AuthProvider>
           <BrowserRouter>
+            <LoadingScreen />
+            <ScrollProgress />
             <ScrollToTop />
             <Suspense fallback={<PageLoader />}>
               <Routes>
