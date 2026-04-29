@@ -1,118 +1,188 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Shield, Award, Users } from 'lucide-react';
+import { ArrowRight, MapPin, Bed, Square } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Props { onSearch: () => void; }
 
-const TRUST = [
-  { icon: Award,  value: '10+',    label: 'Años en el mercado' },
-  { icon: Users,  value: '3,000+', label: 'Clientes satisfechos' },
-  { icon: Shield, value: '100%',   label: 'Propiedades verificadas' },
-];
-
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const TRUST = [
+  { value: '10+', label: 'Años activos' },
+  { value: '3,000+', label: 'Clientes' },
+  { value: '600+', label: 'Propiedades' },
+];
 
 export default function HeroSection({ onSearch }: Props) {
   return (
-    <section className="relative min-h-[100dvh] flex flex-col justify-end overflow-hidden">
+    <section className="relative min-h-[100dvh] flex flex-col md:flex-row overflow-hidden">
 
-      {/* ── Full-bleed property image ── */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=90"
-          alt="Propiedad premium en Venezuela"
-          className="w-full h-full object-cover"
-          style={{ opacity: 0.65 }}
-        />
-        {/* cinematic gradient — reveals image at top, text-safe at bottom */}
-        <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, #040810 18%, rgba(4,8,16,0.7) 50%, rgba(4,8,16,0.15) 100%)' }} />
-        <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(to right, rgba(4,8,16,0.6) 0%, transparent 60%)' }} />
-      </div>
+      {/* ── LEFT — editorial content panel ── */}
+      <div className="relative z-10 flex flex-col justify-center
+                      w-full md:w-[46%] lg:w-[42%]
+                      px-8 md:px-12 lg:px-16 xl:px-20
+                      pt-32 pb-16 md:py-0
+                      bg-navy-950">
 
-      {/* ── Main content — anchored to bottom ── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 pb-36 pt-40">
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-gold-400 text-[11px] font-bold tracking-[0.3em] uppercase mb-7"
-        >
-          El Faro Inmobiliaria · Venezuela
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease }}
-          className="font-display font-bold text-white leading-[0.95] tracking-tight mb-8"
-          style={{ fontSize: 'clamp(3.5rem, 9vw, 7.5rem)' }}
-        >
-          Encuentra
-          <br />
-          tu hogar
-          <br />
-          <span className="text-gold-400">ideal.</span>
-        </motion.h1>
+        {/* thin vertical accent line on the right edge of the panel */}
+        <div className="absolute top-0 right-0 w-px h-full
+                        bg-gradient-to-b from-transparent via-gold-500/25 to-transparent
+                        hidden md:block" />
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45, ease }}
-          className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 max-w-5xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <p className="text-navy-200/55 text-lg leading-relaxed max-w-sm">
-            La inmobiliaria de confianza en Venezuela.
-            Propiedades verificadas en Caracas, Valencia, Maracaibo y más.
-          </p>
+          {/* eyebrow */}
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-gold-500/70 text-[10px] font-bold tracking-[0.35em] uppercase mb-8"
+          >
+            El Faro · Inmobiliaria · Venezuela
+          </motion.p>
 
-          <div className="flex flex-wrap gap-3 shrink-0">
+          {/* headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.25, ease }}
+            className="font-display font-bold text-white leading-[1.02] tracking-tight mb-6"
+            style={{ fontSize: 'clamp(2.6rem, 4.5vw, 4.2rem)' }}
+          >
+            Propiedades
+            <br />
+            excepcionales
+            <br />
+            <span className="text-gold-400">en Venezuela.</span>
+          </motion.h1>
+
+          {/* body */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4, ease }}
+            className="text-navy-300/50 text-[0.95rem] leading-relaxed mb-10 max-w-[340px]"
+          >
+            Más de una década conectando familias con su hogar ideal.
+            Propiedades verificadas en Caracas, Valencia, Maracaibo y más.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.52, ease }}
+            className="flex flex-col sm:flex-row gap-3 mb-14"
+          >
             <button onClick={onSearch} className="btn-primary">
               Explorar propiedades
               <ArrowRight className="w-4 h-4" />
             </button>
-            <a href="/contacto" className="btn-outline">
+            <Link to="/contacto" className="btn-outline">
               Hablar con un asesor
-            </a>
-          </div>
+            </Link>
+          </motion.div>
+
+          {/* trust row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="flex gap-8 pt-8"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+          >
+            {TRUST.map(({ value, label }) => (
+              <div key={label}>
+                <p className="font-display font-bold text-white text-xl leading-none mb-1">{value}</p>
+                <p className="text-navy-500 text-[11px]">{label}</p>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
       </div>
 
-      {/* ── Trust strip — fixed to bottom ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.7, ease }}
-        className="absolute bottom-0 left-0 right-0 z-10"
-        style={{ background: 'rgba(4,8,16,0.75)', backdropFilter: 'blur(16px)', borderTop: '1px solid rgba(255,255,255,0.07)' }}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-10">
-            {TRUST.map(({ icon: Icon, value, label }) => (
-              <div key={label} className="flex items-center gap-3">
-                <Icon className="w-4 h-4 text-gold-500/70 shrink-0" />
-                <div>
-                  <p className="font-display font-bold text-white text-base leading-none">{value}</p>
-                  <p className="text-navy-300/50 text-[11px] mt-0.5">{label}</p>
-                </div>
-              </div>
-            ))}
+      {/* ── RIGHT — property image panel ── */}
+      <div className="relative flex-1 min-h-[55vw] md:min-h-0 overflow-hidden">
+
+        {/* main image */}
+        <motion.img
+          initial={{ scale: 1.06 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=85"
+          alt="Residencia premium — El Faro Inmobiliaria"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* subtle gradient overlays */}
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to right, rgba(4,8,16,0.35) 0%, transparent 40%)' }} />
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, rgba(4,8,16,0.6) 0%, transparent 35%)' }} />
+
+        {/* floating featured property card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9, ease }}
+          className="absolute bottom-8 left-6 md:bottom-10 md:left-8 max-w-[260px]"
+          style={{
+            background: 'rgba(4,8,16,0.88)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '16px',
+            padding: '1rem',
+          }}
+        >
+          {/* mini thumbnail */}
+          <div className="relative rounded-xl overflow-hidden mb-3 h-28">
+            <img
+              src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=80"
+              alt="Residencia Las Mercedes"
+              className="w-full h-full object-cover"
+            />
+            <span className="absolute top-2 left-2 badge-sale text-[10px] px-2 py-0.5">
+              Destacada
+            </span>
           </div>
 
-          {/* Scroll cue */}
-          <button
-            onClick={onSearch}
-            className="hidden md:flex items-center gap-3 text-navy-400/60 hover:text-navy-200 transition-colors group"
-          >
-            <span className="text-[10px] tracking-[0.25em] uppercase">Explorar</span>
-            <div className="w-5 h-8 border border-current rounded-full flex justify-center pt-1.5 opacity-60">
-              <div className="w-0.5 h-2 bg-current rounded-full animate-bounce" />
-            </div>
-          </button>
-        </div>
-      </motion.div>
+          <p className="text-white font-semibold text-sm leading-tight mb-1">
+            Residencia en Las Mercedes
+          </p>
 
+          <div className="flex items-center gap-1 mb-3">
+            <MapPin className="w-3 h-3 text-navy-400" />
+            <p className="text-navy-400 text-[11px]">Caracas, Venezuela</p>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <p className="text-gold-400 font-bold text-sm">$485,000</p>
+            <div className="flex items-center gap-3 text-navy-400 text-[11px]">
+              <span className="flex items-center gap-1">
+                <Bed className="w-3 h-3" /> 4
+              </span>
+              <span className="flex items-center gap-1">
+                <Square className="w-3 h-3" /> 350m²
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* city label top-right */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+          className="absolute top-8 right-8 text-right"
+        >
+          <p className="text-white/30 text-[10px] tracking-[0.25em] uppercase">
+            Caracas · Venezuela
+          </p>
+        </motion.div>
+
+      </div>
     </section>
   );
 }

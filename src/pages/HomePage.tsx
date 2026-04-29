@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import PageTransition from '../components/ui/PageTransition';
 import HeroSection from '../components/home/HeroSection';
 import SearchBar from '../components/home/SearchBar';
@@ -62,24 +63,37 @@ export default function HomePage() {
 
       {/* Categories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-10">
-          <div className="section-accent" />
-          <h2 className="section-title">Explora por categoría</h2>
-          <p className="section-subtitle">Encuentra el inmueble que se ajusta a tus necesidades</p>
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <div className="section-accent" />
+            <h2 className="section-title">Explora por categoría</h2>
+          </div>
+          <Link to="/propiedades"
+            className="hidden sm:flex items-center gap-2 text-navy-400 hover:text-gold-400 text-sm font-medium transition-colors">
+            Ver todo
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {CATEGORIES.map((cat) => (
             <Link key={cat.title} to={cat.to}
-              className="relative overflow-hidden rounded-2xl h-52 group border border-white/5 hover:border-gold-500/30 transition-all duration-300">
+              className="relative overflow-hidden rounded-2xl h-60 group cursor-pointer"
+              style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
               <img src={cat.img} alt={cat.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-35 group-hover:opacity-45" />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 to-navy-950/20" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                <span className={cat.badge === 'Alquiler' ? 'badge-rent mb-2 self-start' : 'badge-sale mb-2 self-start'}>
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-50 group-hover:opacity-60" />
+              <div className="absolute inset-0"
+                style={{ background: 'linear-gradient(to top, rgba(4,8,16,0.92) 0%, rgba(4,8,16,0.3) 60%, transparent 100%)' }} />
+              <div className="absolute inset-0 p-7 flex flex-col justify-end">
+                <span className={`${cat.badge === 'Alquiler' ? 'badge-rent' : 'badge-sale'} mb-3 self-start`}>
                   {cat.badge}
                 </span>
-                <h3 className="text-white font-bold text-xl font-display">{cat.title}</h3>
-                <p className="text-gold-400/70 text-sm mt-1">{cat.count}</p>
+                <h3 className="text-white font-semibold text-lg font-display leading-tight">{cat.title}</h3>
+                <p className="text-gold-500/60 text-xs mt-1.5 font-medium tracking-wide">{cat.count}</p>
+              </div>
+              {/* hover arrow */}
+              <div className="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0"
+                style={{ background: 'rgba(196,144,58,0.15)', border: '1px solid rgba(196,144,58,0.3)' }}>
+                <ArrowRight className="w-3.5 h-3.5 text-gold-400" />
               </div>
             </Link>
           ))}

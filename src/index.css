@@ -83,6 +83,13 @@
   .section-title   { @apply font-display text-3xl md:text-4xl font-bold text-white tracking-tight; }
   .section-subtitle { @apply text-navy-300/60 mt-3 text-lg leading-relaxed; }
   .section-accent  { @apply w-8 h-px bg-gold-500/60 mb-5; }
+  .btn-navy {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5
+           bg-navy-800 hover:bg-navy-700 text-navy-100 font-semibold text-sm
+           rounded-xl transition-all duration-200 active:scale-[0.97];
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
   .gradient-text   { @apply text-gold-400; }
   .divider         { border-color: rgba(255,255,255,0.06); }
 }
