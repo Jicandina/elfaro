@@ -1,132 +1,116 @@
 import { motion } from 'framer-motion';
-import { Shield, Award, Users, Bed, Maximize2, MapPin } from 'lucide-react';
+import { ArrowRight, Shield, Award, Users } from 'lucide-react';
 
 interface Props { onSearch: () => void; }
 
 const TRUST = [
-  { icon: Award,  value: '10+',    label: 'Años de experiencia' },
-  { icon: Users,  value: '3,000+', label: 'Clientes' },
-  { icon: Shield, value: '100%',   label: 'Verificadas' },
+  { icon: Award,  value: '10+',    label: 'Años en el mercado' },
+  { icon: Users,  value: '3,000+', label: 'Clientes satisfechos' },
+  { icon: Shield, value: '100%',   label: 'Propiedades verificadas' },
 ];
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function HeroSection({ onSearch }: Props) {
   return (
-    <section className="min-h-[100dvh] flex flex-col lg:flex-row">
+    <section className="relative min-h-[100dvh] flex flex-col justify-end overflow-hidden">
 
-      {/* LEFT — editorial white panel */}
-      <div className="flex-1 bg-white flex items-center lg:max-w-[52%]">
-        <div className="w-full px-8 md:px-14 xl:px-20 pt-28 pb-16">
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="text-xs font-bold tracking-[0.25em] uppercase text-amber-600 mb-8"
-          >
-            El Faro Inmobiliaria · Venezuela
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-5xl md:text-6xl xl:text-[5.5rem] font-bold text-stone-900 leading-[1.02] tracking-tight mb-7"
-          >
-            Tu próxima<br />
-            propiedad<br />
-            <span className="text-amber-600">te espera.</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.38 }}
-            className="text-stone-500 text-lg max-w-sm mb-10 leading-relaxed"
-          >
-            Compra, vende o alquila con la inmobiliaria más confiable de Venezuela.
-            Propiedades verificadas, asesores expertos.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-wrap gap-3 mb-14"
-          >
-            <button onClick={onSearch} className="btn-primary px-8 py-3.5 text-base">
-              Buscar propiedades
-            </button>
-            <a href="/contacto" className="btn-outline px-8 py-3.5 text-base">
-              Hablar con un asesor
-            </a>
-          </motion.div>
-
-          {/* Trust strip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex items-center gap-8 pt-8 border-t border-stone-100"
-          >
-            {TRUST.map(({ icon: Icon, value, label }) => (
-              <div key={label} className="flex items-center gap-2.5">
-                <Icon className="w-4 h-4 text-amber-500 shrink-0" />
-                <div>
-                  <p className="font-display font-bold text-stone-900 text-lg leading-none">{value}</p>
-                  <p className="text-stone-400 text-xs mt-0.5">{label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-        </div>
+      {/* ── Full-bleed property image ── */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=90"
+          alt="Propiedad premium en Venezuela"
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.65 }}
+        />
+        {/* cinematic gradient — reveals image at top, text-safe at bottom */}
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to top, #040810 18%, rgba(4,8,16,0.7) 50%, rgba(4,8,16,0.15) 100%)' }} />
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to right, rgba(4,8,16,0.6) 0%, transparent 60%)' }} />
       </div>
 
-      {/* RIGHT — full-bleed property image */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, delay: 0.15 }}
-        className="relative h-72 lg:h-auto lg:flex-1 overflow-hidden bg-stone-200"
-      >
-        <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1400&q=85"
-          alt="Propiedad premium en Venezuela"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      {/* ── Main content — anchored to bottom ── */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-16 pb-36 pt-40">
 
-        {/* Floating property card */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-gold-400 text-[11px] font-bold tracking-[0.3em] uppercase mb-7"
+        >
+          El Faro Inmobiliaria · Venezuela
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease }}
+          className="font-display font-bold text-white leading-[0.95] tracking-tight mb-8"
+          style={{ fontSize: 'clamp(3.5rem, 9vw, 7.5rem)' }}
+        >
+          Encuentra
+          <br />
+          tu hogar
+          <br />
+          <span className="text-gold-400">ideal.</span>
+        </motion.h1>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute bottom-6 left-6 right-6 md:left-8 md:bottom-8 md:right-auto md:w-80 bg-white rounded-2xl p-5 shadow-xl"
+          transition={{ duration: 0.6, delay: 0.45, ease }}
+          className="flex flex-col md:flex-row items-start md:items-end justify-between gap-8 max-w-5xl"
         >
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <p className="font-semibold text-stone-900 text-sm">Penthouse · Altamira</p>
-              <div className="flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-stone-400" />
-                <p className="text-stone-400 text-xs">Caracas, Venezuela</p>
-              </div>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100">
-              Destacado
-            </span>
-          </div>
-          <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-stone-500 text-xs">
-                <Bed className="w-3.5 h-3.5" /> 3 hab.
-              </div>
-              <div className="flex items-center gap-1.5 text-stone-500 text-xs">
-                <Maximize2 className="w-3.5 h-3.5" /> 180m²
-              </div>
-            </div>
-            <p className="font-display font-bold text-stone-900 text-base">$285,000</p>
+          <p className="text-navy-200/55 text-lg leading-relaxed max-w-sm">
+            La inmobiliaria de confianza en Venezuela.
+            Propiedades verificadas en Caracas, Valencia, Maracaibo y más.
+          </p>
+
+          <div className="flex flex-wrap gap-3 shrink-0">
+            <button onClick={onSearch} className="btn-primary">
+              Explorar propiedades
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <a href="/contacto" className="btn-outline">
+              Hablar con un asesor
+            </a>
           </div>
         </motion.div>
+      </div>
+
+      {/* ── Trust strip — fixed to bottom ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.7, ease }}
+        className="absolute bottom-0 left-0 right-0 z-10"
+        style={{ background: 'rgba(4,8,16,0.75)', backdropFilter: 'blur(16px)', borderTop: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-10">
+            {TRUST.map(({ icon: Icon, value, label }) => (
+              <div key={label} className="flex items-center gap-3">
+                <Icon className="w-4 h-4 text-gold-500/70 shrink-0" />
+                <div>
+                  <p className="font-display font-bold text-white text-base leading-none">{value}</p>
+                  <p className="text-navy-300/50 text-[11px] mt-0.5">{label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Scroll cue */}
+          <button
+            onClick={onSearch}
+            className="hidden md:flex items-center gap-3 text-navy-400/60 hover:text-navy-200 transition-colors group"
+          >
+            <span className="text-[10px] tracking-[0.25em] uppercase">Explorar</span>
+            <div className="w-5 h-8 border border-current rounded-full flex justify-center pt-1.5 opacity-60">
+              <div className="w-0.5 h-2 bg-current rounded-full animate-bounce" />
+            </div>
+          </button>
+        </div>
       </motion.div>
 
     </section>
