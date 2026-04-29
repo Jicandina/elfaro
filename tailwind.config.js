@@ -31,8 +31,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'gold':      '0 0 20px rgba(245,158,11,0.2)',

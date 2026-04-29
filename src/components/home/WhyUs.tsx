@@ -2,63 +2,67 @@ import { Shield, Users, TrendingUp, Star, Clock, Key } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const REASONS = [
-  { icon: Shield,     title: 'Propiedades verificadas',       description: 'Cada propiedad es inspeccionada físicamente por nuestro equipo antes de publicarse. Cero sorpresas.' },
-  { icon: Users,      title: 'Asesores certificados',         description: 'Nuestros agentes tienen más de 8 años de experiencia promedio en el mercado inmobiliario venezolano.' },
-  { icon: TrendingUp, title: 'Precios reales de mercado',     description: 'Accede a valoraciones precisas basadas en datos actualizados. Ni más ni menos de lo que vale.' },
-  { icon: Star,       title: 'Servicio de excelencia',        description: 'Atención personalizada en cada etapa del proceso. Estamos contigo desde la búsqueda hasta la firma.' },
-  { icon: Clock,      title: 'Respuesta en menos de 1 hora',  description: 'Nuestro equipo responde rápido. Ningún cliente espera más de una hora por una consulta.' },
-  { icon: Key,        title: 'Gestión completa del cierre',   description: 'Nos encargamos de toda la documentación legal, notaría y trámites para que tú no tengas que preocuparte.' },
+  { icon: Shield,     num: '01', title: 'Propiedades verificadas',       description: 'Cada propiedad es inspeccionada físicamente por nuestro equipo antes de publicarse. Cero sorpresas.' },
+  { icon: Users,      num: '02', title: 'Asesores certificados',         description: 'Nuestros agentes tienen más de 8 años de experiencia promedio en el mercado inmobiliario venezolano.' },
+  { icon: TrendingUp, num: '03', title: 'Precios reales de mercado',     description: 'Accede a valoraciones precisas basadas en datos actualizados. Ni más ni menos de lo que vale.' },
+  { icon: Star,       num: '04', title: 'Servicio de excelencia',        description: 'Atención personalizada en cada etapa del proceso. Estamos contigo desde la búsqueda hasta la firma.' },
+  { icon: Clock,      num: '05', title: 'Respuesta en menos de 1 hora',  description: 'Nuestro equipo responde rápido. Ningún cliente espera más de una hora por una consulta.' },
+  { icon: Key,        num: '06', title: 'Gestión completa del cierre',   description: 'Nos encargamos de toda la documentación legal, notaría y trámites para que tú no tengas que preocuparte.' },
 ];
-
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
-};
 
 export default function WhyUs() {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-14"
-      >
-        <div className="section-accent mx-auto" />
-        <h2 className="section-title">¿Por qué elegir El Faro?</h2>
-        <p className="section-subtitle max-w-xl mx-auto">
-          Somos más que una inmobiliaria. Somos tu guía en la decisión más importante de tu vida.
-        </p>
-      </motion.div>
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-16 items-start">
 
-      <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        variants={container}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-      >
-        {REASONS.map(({ icon: Icon, title, description }) => (
-          <motion.div
-            key={title}
-            variants={item}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="card p-6 group hover:border-gold-500/30 transition-all duration-300"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center mb-5 group-hover:bg-gold-500/20 group-hover:border-gold-500/40 transition-all duration-300">
-              <Icon className="w-6 h-6 text-gold-400" />
-            </div>
-            <h3 className="text-white font-bold mb-2">{title}</h3>
-            <p className="text-navy-400 text-sm leading-relaxed">{description}</p>
-          </motion.div>
-        ))}
-      </motion.div>
+        {/* Left — sticky header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="lg:sticky lg:top-28"
+        >
+          <div className="section-accent" />
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
+            Por qué elegir<br />
+            <span className="text-gold-400">El Faro</span>
+          </h2>
+          <p className="text-navy-300/60 text-base leading-relaxed max-w-xs">
+            Somos más que una inmobiliaria. Somos tu guía en la decisión más importante de tu vida.
+          </p>
+        </motion.div>
+
+        {/* Right — feature list */}
+        <div className="divide-y divide-navy-800/60">
+          {REASONS.map(({ icon: Icon, num, title, description }, i) => (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-start gap-6 py-7 group"
+            >
+              <div className="flex items-center gap-4 w-28 shrink-0 pt-0.5">
+                <span className="font-display text-navy-700 text-xs font-bold tabular-nums group-hover:text-gold-500/60 transition-colors duration-300">
+                  {num}
+                </span>
+                <div className="w-9 h-9 rounded-xl bg-navy-800/60 border border-navy-700/60 flex items-center justify-center group-hover:border-gold-500/30 group-hover:bg-gold-500/8 transition-all duration-300">
+                  <Icon className="w-4 h-4 text-navy-400 group-hover:text-gold-400 transition-colors duration-300" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-white font-semibold mb-1.5 group-hover:text-gold-100 transition-colors duration-300">
+                  {title}
+                </h3>
+                <p className="text-navy-400 text-sm leading-relaxed">{description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
     </section>
   );
 }

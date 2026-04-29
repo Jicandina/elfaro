@@ -67,7 +67,7 @@
     @apply text-navy-300/70 mt-3 text-lg;
   }
   .gradient-text {
-    @apply bg-gradient-to-r from-gold-400 to-gold-300 bg-clip-text text-transparent;
+    @apply text-gold-400;
   }
   .section-accent {
     @apply w-12 h-0.5 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mb-4;
