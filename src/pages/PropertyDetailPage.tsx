@@ -4,7 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft, BedDouble, Bath, Car, Maximize2, MapPin,
   Phone, Mail, ChevronLeft, ChevronRight, Share2, Heart,
-  CheckCircle2, Loader2, Send, X, Star,
+  CheckCircle2, Loader2, Send, X,
 } from 'lucide-react';
 import { useProperty, useProperties } from '../hooks/useProperties';
 import { saveInquiry } from '../lib/api';
@@ -181,7 +181,7 @@ export default function PropertyDetailPage() {
                 <span className={property.operation === 'alquiler' ? 'badge-rent' : 'badge-sale'}>
                   {property.operation === 'alquiler' ? 'Alquiler' : 'Venta'}
                 </span>
-                {property.featured && <span className="badge-featured flex items-center gap-1"><Star className="w-2.5 h-2.5 fill-gold-400" />Destacado</span>}
+                {property.featured && <span className="badge-featured">★ Destacado</span>}
               </div>
               <div className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-navy-950/70 backdrop-blur-sm text-xs text-white/60">
                 {img + 1} / {property.images.length} · Clic para ampliar
@@ -230,7 +230,7 @@ export default function PropertyDetailPage() {
               <div className="flex flex-wrap items-center gap-5 mb-5">
                 <div>
                   <p className="text-xs text-navy-500 mb-1">Precio</p>
-                  <p className="font-display text-3xl font-bold text-gold-400">
+                  <p className="font-display text-3xl font-bold gradient-text">
                     {fmt(property.price, property.currency)}
                     {property.operation === 'alquiler' && (
                       <span className="text-base font-normal text-navy-500">/mes</span>

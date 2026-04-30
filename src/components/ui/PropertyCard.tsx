@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BedDouble, Bath, Car, Maximize2, MapPin, Heart, Scale, Star } from 'lucide-react';
+import { BedDouble, Bath, Car, Maximize2, MapPin, Heart, Scale } from 'lucide-react';
 import { useState } from 'react';
 import type { Property } from '../../types/property';
 import WhatsAppButton from './WhatsAppButton';
@@ -42,7 +42,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           <span className="badge bg-navy-950/70 text-navy-300 border border-white/10 capitalize backdrop-blur-sm">
             {property.type}
           </span>
-          {property.featured && <span className="badge-featured flex items-center gap-1"><Star className="w-2.5 h-2.5 fill-gold-400" />Destacado</span>}
+          {property.featured && <span className="badge-featured">★ Destacado</span>}
         </div>
 
         {/* Action buttons top-right */}

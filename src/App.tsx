@@ -52,9 +52,8 @@ const InquiriesPage       = lazy(() => import('./pages/admin/InquiriesPage'));
 function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
-      <a href="#main-content" className="skip-link">Ir al contenido principal</a>
       <Header />
-      <main id="main-content" className="flex-1">{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppButton variant="floating" />
       <CompareBar />
@@ -99,7 +98,7 @@ export default function App() {
                 <Route path="*" element={
                   <ClientLayout>
                     <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4 px-4 text-center">
-                      <p className="font-display text-8xl font-bold text-gold-400 select-none">404</p>
+                      <p className="font-display text-8xl font-bold gradient-text select-none">404</p>
                       <h1 className="text-white text-2xl font-display font-bold">Página no encontrada</h1>
                       <p className="text-navy-400 max-w-sm">
                         La página que buscas no existe o fue movida. Explora nuestras propiedades o vuelve al inicio.

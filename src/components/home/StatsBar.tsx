@@ -1,29 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
+import { Building2, Users, MapPin, Award } from 'lucide-react';
 
 const STATS = [
-  { target: 600,  suffix: '+',     label: 'Propiedades listadas', format: false },
-  { target: 3000, suffix: '+',     label: 'Clientes satisfechos', format: true  },
-  { target: 15,   suffix: '',      label: 'Ciudades activas',     format: false },
-  { target: 10,   suffix: '',      label: 'Años de trayectoria',  format: false },
+  { icon: Building2, target: 600,  suffix: '+',     label: 'Propiedades listadas' },
+  { icon: Users,     target: 3000, suffix: '+',     label: 'Clientes satisfechos', format: true },
+  { icon: MapPin,    target: 15,   suffix: '',      label: 'Ciudades activas' },
+  { icon: Award,     target: 10,   suffix: ' años', label: 'De trayectoria' },
 ];
 
 function Counter({ target, suffix, format, inView }: {
-  target: number; suffix: string; format: boolean; inView: boolean;
+  target: number; suffix: string; format?: boolean; inView: boolean;
 }) {
   const [count, setCount] = useState(0);
+
   useEffect(() => {
     if (!inView) return;
-    const start = Date.now();
-    const duration = 2000;
+    const duration = 1800;
+    const startTime = Date.now();
     const tick = () => {
-      const p = Math.min((Date.now() - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 4);
+      const p = Math.min((Date.now() - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
       setCount(Math.round(eased * target));
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   }, [inView, target]);
-  return <>{format ? count.toLocaleString() : count}{suffix}</>;
+
+  const display = format ? count.toLocaleString('en-US') : count;
+  return <>{display}{suffix}</>;
 }
 
 export default function StatsBar() {
@@ -42,18 +46,23 @@ export default function StatsBar() {
   }, []);
 
   return (
-    <section ref={ref} className="py-20" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-0 lg:divide-x" style={{ '--tw-divide-opacity': '1' } as React.CSSProperties}>
-          {STATS.map(({ target, suffix, format, label }) => (
-            <div key={label} className="lg:px-12 first:pl-0 last:pr-0">
-              <p className="font-display text-5xl md:text-6xl font-bold text-white tracking-tight leading-none mb-3">
-                <Counter target={target} suffix={suffix} format={format} inView={inView} />
-              </p>
-              <div className="w-6 h-px bg-gold-500/50 mb-3" />
-              <p className="text-navy-300/50 text-sm">{label}</p>
-            </div>
-          ))}
+    <section className="relative py-14 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-navy-900/0 via-gold-500/5 to-navy-900/0" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={ref} className="bg-navy-900/60 backdrop-blur-sm border border-gold-500/10 rounded-3xl p-8 md:p-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {STATS.map(({ icon: Icon, target, suffix, format, label }) => (
+              <div key={label} className="text-center group">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-2xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center group-hover:bg-gold-500/20 transition-all duration-300">
+                  <Icon className="w-6 h-6 text-gold-400" />
+                </div>
+                <p className="text-4xl font-display font-bold gradient-text mb-1">
+                  <Counter target={target} suffix={suffix} format={format} inView={inView} />
+                </p>
+                <p className="text-navy-400 text-sm">{label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import PageTransition from '../components/ui/PageTransition';
 import { useSearchParams } from 'react-router-dom';
-import { SlidersHorizontal, LayoutGrid, List, ArrowUpDown, X, ChevronDown, Map, ChevronUp, Search } from 'lucide-react';
+import { SlidersHorizontal, LayoutGrid, List, ArrowUpDown, X, ChevronDown, Map } from 'lucide-react';
 import PropertyCard from '../components/ui/PropertyCard';
 import NLSearchBar from '../components/ui/NLSearchBar';
 import { useProperties } from '../hooks/useProperties';
@@ -318,14 +318,12 @@ export default function PropertiesPage() {
           </div>
         ) : sorted.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-28 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-navy-900 border border-white/6 flex items-center justify-center mb-5">
-              <Search className="w-7 h-7 text-navy-600" />
-            </div>
+            <SlidersHorizontal className="w-12 h-12 text-navy-700 mb-4" />
             <p className="text-white font-semibold text-lg mb-2">Sin resultados</p>
             <p className="text-navy-500 text-sm max-w-xs mb-6">
-              No encontramos propiedades con esos criterios. Prueba ampliando la ciudad, el rango de precio o el tipo.
+              No hay propiedades con esos filtros. Intenta ampliar tu búsqueda.
             </p>
-            <button onClick={clearFilters} className="btn-outline text-sm py-2.5 px-6">
+            <button onClick={clearFilters} className="btn-outline text-sm py-2">
               Limpiar filtros
             </button>
           </div>
@@ -341,9 +339,9 @@ export default function PropertiesPage() {
       {/* Back to top */}
       {showTop && (
         <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          aria-label="Volver al inicio de la página"
+          aria-label="Volver arriba"
           className="fixed bottom-24 right-5 z-40 w-10 h-10 rounded-full bg-navy-800 border border-white/10 shadow-xl flex items-center justify-center text-navy-300 hover:text-gold-400 hover:border-gold-500/40 transition-all">
-          <ChevronUp className="w-4 h-4" />
+          ↑
         </button>
       )}
     </div>

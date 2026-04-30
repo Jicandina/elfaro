@@ -24,19 +24,14 @@ export default function SearchBar({ onSearch }: Props) {
   return (
     <div className="bg-navy-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-card overflow-hidden">
       {/* Operation tabs */}
-      <div className="flex border-b border-white/5" role="tablist" aria-label="Tipo de operación">
+      <div className="flex border-b border-white/5">
         {(['venta', 'alquiler'] as const).map((op) => (
-          <button
-            key={op}
-            role="tab"
-            aria-selected={operation === op}
-            onClick={() => setOperation(op)}
-            className={`flex-1 py-3 text-sm font-semibold transition-all duration-200 ${
+          <button key={op} onClick={() => setOperation(op)}
+            className={`flex-1 py-3 text-sm font-semibold capitalize transition-all duration-200 ${
               operation === op
                 ? 'bg-gold-500/10 text-gold-400 border-b-2 border-gold-500'
                 : 'text-navy-400 hover:text-white'
-            }`}
-          >
+            }`}>
             {op === 'venta' ? 'Comprar' : 'Alquilar'}
           </button>
         ))}
@@ -44,17 +39,9 @@ export default function SearchBar({ onSearch }: Props) {
 
       {/* Filters row */}
       <div className="p-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-
         {/* City */}
         <div className="relative">
-          <label htmlFor="sb-city" className="sr-only">Ciudad</label>
-          <select
-            id="sb-city"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="select-field pr-8"
-            aria-label="Seleccionar ciudad"
-          >
+          <select value={city} onChange={(e) => setCity(e.target.value)} className="select-field pr-8">
             <option value="">Todas las ciudades</option>
             {VENEZUELAN_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
@@ -63,52 +50,33 @@ export default function SearchBar({ onSearch }: Props) {
 
         {/* Type */}
         <div className="relative">
-          <label htmlFor="sb-type" className="sr-only">Tipo de propiedad</label>
-          <select
-            id="sb-type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="select-field pr-8"
-            aria-label="Tipo de propiedad"
-          >
+          <select value={type} onChange={(e) => setType(e.target.value)} className="select-field pr-8">
             <option value="">Tipo de propiedad</option>
             {['apartamento', 'casa', 'local', 'oficina', 'terreno'].map((t) => (
-              <option key={t} value={t} className="capitalize">
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </option>
+              <option key={t} value={t} className="capitalize">{t.charAt(0).toUpperCase() + t.slice(1)}</option>
             ))}
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
         </div>
 
         {/* Price range */}
-        <fieldset className="flex items-center gap-2 min-w-0">
-          <legend className="sr-only">Rango de precio en dólares</legend>
-          <label htmlFor="sb-min" className="sr-only">Precio mínimo en USD</label>
+        <div className="flex items-center gap-2">
           <input
-            id="sb-min"
-            type="number"
-            min="0"
-            placeholder="Precio mín. $"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            className="input-field min-w-0"
+            type="number" min="0" placeholder="Precio mín. $"
+            value={minPrice} onChange={(e) => setMinPrice(e.target.value)}
+            className="input-field"
           />
-          <span className="text-navy-500 text-sm font-medium shrink-0" aria-hidden="true">–</span>
-          <label htmlFor="sb-max" className="sr-only">Precio máximo en USD</label>
+          <span className="text-navy-500 text-sm font-medium shrink-0">–</span>
           <input
-            id="sb-max"
-            type="number"
-            min="0"
-            placeholder="Precio máx. $"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            className="input-field min-w-0"
+            type="number" min="0" placeholder="Precio máx. $"
+            value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)}
+            className="input-field"
           />
-        </fieldset>
+        </div>
 
-        {/* Search button */}
-        <button onClick={submit} className="btn-primary gap-2 w-full" aria-label="Buscar propiedades">
+        {/* Search btn */}
+        <button onClick={submit}
+          className="btn-primary gap-2 w-full">
           <Search className="w-4 h-4" />
           Buscar
         </button>

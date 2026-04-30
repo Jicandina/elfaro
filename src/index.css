@@ -7,86 +7,42 @@
   html { scroll-behavior: smooth; }
 
   body {
-    @apply bg-navy-950 text-navy-50 font-sans antialiased;
-    background-image: radial-gradient(ellipse 100% 60% at 50% -10%, rgba(196,144,58,0.04), transparent);
+    @apply bg-navy-950 text-navy-100 font-sans antialiased m-0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(58,98,168,0.15), transparent),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233a62a8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
-  /* visible focus ring for keyboard navigation */
-  :focus-visible {
-    outline: 2px solid rgba(196,144,58,0.7);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  /* skip-to-content link for screen readers */
-  .skip-link {
-    @apply fixed top-2 left-2 z-[9999] px-4 py-2 bg-gold-500 text-navy-950 font-bold text-sm rounded-lg;
-    transform: translateY(-100%);
-    transition: transform 0.15s ease;
-  }
-  .skip-link:focus { transform: translateY(0); }
-
-  /* respect reduced motion globally */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: #040810; }
-  ::-webkit-scrollbar-thumb { background: #252018; border-radius: 9999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3C3228; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-navy-950; }
+  ::-webkit-scrollbar-thumb { @apply bg-navy-700 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-navy-600; }
 }
 
 @layer components {
-
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5
-           bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold text-sm
-           rounded-xl transition-all duration-200 active:scale-[0.97] tracking-wide;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold rounded-xl transition-all duration-200 shadow-gold hover:shadow-gold-lg active:scale-95;
   }
-
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5
-           border text-navy-200 hover:text-white font-semibold text-sm
-           rounded-xl transition-all duration-200 active:scale-[0.97] hover:bg-white/5;
-    border-color: rgba(255,255,255,0.15);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-gold-500/60 hover:border-gold-400 text-gold-400 hover:text-gold-300 font-semibold rounded-xl transition-all duration-200 hover:bg-gold-500/10 active:scale-95;
   }
-  .btn-outline:hover { border-color: rgba(196,144,58,0.4); }
-
+  .btn-navy {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-navy-700 hover:bg-navy-600 text-white font-semibold rounded-xl transition-all duration-200 border border-navy-600 active:scale-95;
+  }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2
-           text-navy-300 hover:text-white font-medium text-sm
-           rounded-lg transition-all duration-200 hover:bg-white/5;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-navy-200 hover:text-white hover:bg-white/5 font-medium rounded-lg transition-all duration-200;
   }
 
   .card {
-    @apply bg-navy-900 rounded-2xl overflow-hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.35), 0 8px 32px rgba(0,0,0,0.25);
+    @apply bg-navy-900 border border-navy-800/60 rounded-2xl shadow-card overflow-hidden;
   }
-
   .card-hover {
-    @apply card transition-all duration-300 hover:-translate-y-1.5 cursor-pointer;
-  }
-  .card-hover:hover {
-    border-color: rgba(196,144,58,0.2);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 16px 48px rgba(0,0,0,0.3);
+    @apply card transition-all duration-300 hover:border-gold-500/30 hover:shadow-card-hover hover:-translate-y-1;
   }
 
   .input-field {
-    @apply w-full bg-navy-900 text-navy-50 placeholder-navy-400 text-sm
-           rounded-xl px-4 py-3 outline-none transition-all duration-200;
-    border: 1px solid rgba(255,255,255,0.08);
+    @apply w-full bg-navy-800 border border-navy-700 text-navy-100 placeholder-navy-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500/60 transition-all duration-200;
   }
-  .input-field:focus {
-    border-color: rgba(196,144,58,0.5);
-    box-shadow: 0 0 0 3px rgba(196,144,58,0.08);
-  }
-
   .select-field {
     @apply input-field appearance-none cursor-pointer;
   }
@@ -95,24 +51,25 @@
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
   }
   .badge-rent {
-    @apply badge bg-navy-800 text-navy-200;
-    border: 1px solid rgba(255,255,255,0.08);
+    @apply badge bg-navy-700/80 text-navy-200 border border-navy-600;
   }
   .badge-sale {
-    @apply badge bg-gold-500/15 text-gold-400;
-    border: 1px solid rgba(196,144,58,0.25);
+    @apply badge bg-gold-500/15 text-gold-400 border border-gold-500/30;
   }
-  .badge-featured { @apply badge-sale; }
-
-  .section-title   { @apply font-display text-3xl md:text-4xl font-bold text-white tracking-tight; }
-  .section-subtitle { @apply text-navy-300/60 mt-3 text-lg leading-relaxed; }
-  .section-accent  { @apply w-8 h-px bg-gold-500/60 mb-5; }
-  .btn-navy {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5
-           bg-navy-800 hover:bg-navy-700 text-navy-100 font-semibold text-sm
-           rounded-xl transition-all duration-200 active:scale-[0.97];
-    border: 1px solid rgba(255,255,255,0.08);
+  .badge-featured {
+    @apply badge bg-gold-500/20 text-gold-300 border border-gold-400/40;
   }
 
-  .divider         { border-color: rgba(255,255,255,0.06); }
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-bold text-white;
+  }
+  .section-subtitle {
+    @apply text-navy-300/70 mt-3 text-lg;
+  }
+  .gradient-text {
+    @apply text-gold-400;
+  }
+  .section-accent {
+    @apply w-12 h-0.5 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mb-4;
+  }
 }
