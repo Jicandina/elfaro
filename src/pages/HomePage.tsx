@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import PageTransition from '../components/ui/PageTransition';
 import HeroSection from '../components/home/HeroSection';
 import SearchBar from '../components/home/SearchBar';
@@ -44,6 +45,46 @@ export default function HomePage() {
         <SearchBar onSearch={setFilters} />
       </div>
 
+      {/* Categories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
+        >
+          <div className="section-accent" />
+          <h2 className="section-title">Explora por categoría</h2>
+          <p className="section-subtitle">Encuentra el inmueble que se ajusta a tus necesidades</p>
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5" style={{ perspective: '900px' }}>
+          {CATEGORIES.map((cat, i) => (
+            <motion.div
+              key={cat.title}
+              initial={{ opacity: 0, y: 40, rotateX: 10 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link to={cat.to}
+                className="relative overflow-hidden rounded-2xl h-52 flex group border border-white/5 hover:border-gold-500/30 transition-all duration-300">
+                <img src={cat.img} alt={cat.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-35 group-hover:opacity-45" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 to-navy-950/20" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                  <span className={cat.badge === 'Alquiler' ? 'badge-rent mb-2 self-start' : 'badge-sale mb-2 self-start'}>
+                    {cat.badge}
+                  </span>
+                  <h3 className="text-white font-bold text-xl font-display">{cat.title}</h3>
+                  <p className="text-gold-400/70 text-sm mt-1">{cat.count}</p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* Featured / Results */}
       <FeaturedProperties
         properties={hasFilters ? properties : featured.length >= 3 ? featured : properties.slice(0, 6)}
@@ -54,37 +95,11 @@ export default function HomePage() {
           : 'Selección premium de los mejores inmuebles del mercado'}
       />
 
-      {/* Why Us */}
-      <WhyUs />
-
       {/* Stats */}
       <StatsBar />
 
-      {/* Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-10">
-          <div className="section-accent" />
-          <h2 className="section-title">Explora por categoría</h2>
-          <p className="section-subtitle">Encuentra el inmueble que se ajusta a tus necesidades</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.title} to={cat.to}
-              className="relative overflow-hidden rounded-2xl h-52 group border border-white/5 hover:border-gold-500/30 transition-all duration-300">
-              <img src={cat.img} alt={cat.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-35 group-hover:opacity-45" />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 to-navy-950/20" />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                <span className={cat.badge === 'Alquiler' ? 'badge-rent mb-2 self-start' : 'badge-sale mb-2 self-start'}>
-                  {cat.badge}
-                </span>
-                <h3 className="text-white font-bold text-xl font-display">{cat.title}</h3>
-                <p className="text-gold-400/70 text-sm mt-1">{cat.count}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Why Us */}
+      <WhyUs />
 
       {/* Testimonials */}
       <Testimonials />

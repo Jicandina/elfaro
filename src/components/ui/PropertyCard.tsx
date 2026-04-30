@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { BedDouble, Bath, Car, Maximize2, MapPin, Heart, Scale } from 'lucide-react';
 import { useState } from 'react';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import type { Property } from '../../types/property';
 import WhatsAppButton from './WhatsAppButton';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -13,6 +14,18 @@ export default function PropertyCard({ property }: { property: Property }) {
   const liked    = isFav(property.id);
   const compared = isIn(property.id);
 
+  const mouseX  = useMotionValue(0);
+  const mouseY  = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), { stiffness: 200, damping: 25 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), { stiffness: 200, damping: 25 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - r.left) / r.width - 0.5);
+    mouseY.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const handleMouseLeave = () => { mouseX.set(0); mouseY.set(0); };
+
   const fmt = (price: number, cur: string) => {
     if (cur === 'USD') return `$${price.toLocaleString('en-US')}`;
     if (cur === 'EUR') return `€${price.toLocaleString('de-DE')}`;
@@ -22,7 +35,13 @@ export default function PropertyCard({ property }: { property: Property }) {
   const waMsg = `Hola, vi la propiedad "${property.title}" en El Faro Inmobiliaria y me gustaría más información.`;
 
   return (
-    <div className="card-hover group flex flex-col">
+    <div style={{ perspective: '1000px' }}>
+    <motion.div
+      style={{ rotateX, rotateY }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="card-hover group flex flex-col"
+    >
       {/* Image */}
       <div className="relative overflow-hidden h-56 shrink-0">
         <img
@@ -129,6 +148,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           <WhatsAppButton phone={property.contactPhone} message={waMsg} variant="card" className="flex-1" />
         </div>
       </div>
+    </motion.div>
     </div>
   );
 }
