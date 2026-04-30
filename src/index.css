@@ -11,6 +11,30 @@
     background-image: radial-gradient(ellipse 100% 60% at 50% -10%, rgba(196,144,58,0.04), transparent);
   }
 
+  /* visible focus ring for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid rgba(196,144,58,0.7);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* skip-to-content link for screen readers */
+  .skip-link {
+    @apply fixed top-2 left-2 z-[9999] px-4 py-2 bg-gold-500 text-navy-950 font-bold text-sm rounded-lg;
+    transform: translateY(-100%);
+    transition: transform 0.15s ease;
+  }
+  .skip-link:focus { transform: translateY(0); }
+
+  /* respect reduced motion globally */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #040810; }
   ::-webkit-scrollbar-thumb { background: #252018; border-radius: 9999px; }
@@ -90,6 +114,5 @@
     border: 1px solid rgba(255,255,255,0.08);
   }
 
-  .gradient-text   { @apply text-gold-400; }
   .divider         { border-color: rgba(255,255,255,0.06); }
 }

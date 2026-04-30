@@ -51,7 +51,7 @@ export default function ContactPage() {
         <div className="text-center mb-14">
           <div className="section-accent mx-auto" />
           <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
-            Hablemos de tu <span className="gradient-text">propiedad</span>
+            Hablemos de tu <span className="text-gold-400">propiedad</span>
           </h1>
           <p className="text-navy-400 text-lg max-w-xl mx-auto">
             Ya sea que quieras comprar, vender o alquilar, nuestro equipo te acompaña en cada paso sin costo ni compromiso.
